@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formTitle}">Nueva prueba</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Pruebas</p>
+            <h1 th:text="${formTitle}">Crear nueva prueba</h1>
+            <p>Rellena los datos de la prueba.</p>
+        </section>
+
+        <section class="page-section">
+            <article class="card panel">
+                <div class="auth-message" th:if="${errorMessage}" th:text="${errorMessage}" style="color:#ef5b2a;"></div>
+
+                <form th:action="${formAction}" th:object="${prueba}" method="post">
+
+                    <div class="field">
+                        <label for="nombre">Nombre *</label>
+                        <input id="nombre" type="text" th:field="*{nombre}" required />
+                        <small class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="fecha">Fecha *</label>
+                            <input id="fecha" type="date" th:field="*{fecha}" required />
+                            <small class="field-error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></small>
+                        </div>
+                        <div class="field">
+                            <label for="localidad">Localidad</label>
+                            <input id="localidad" type="text" th:field="*{localidad}" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="campeonato">Campeonato</label>
+                        <input id="campeonato" type="text" th:field="*{campeonato}" />
+                    </div>
+
+                    <!-- Selector de organizador: visible solo para admin -->
+                    <div class="field" th:if="${isAdmin}">
+                        <label for="organizadorLicencia">Organizador</label>
+                        <select id="organizadorLicencia" name="organizadorLicencia">
+                            <option value="">-- Selecciona organizador --</option>
+                            <option th:each="o : ${organizadores}"
+                                    th:value="${o.licencia}"
+                                    th:text="${o.nombre + ' ' + o.apellidos}"
+                                    th:selected="${prueba.organizador != null and prueba.organizador.licencia == o.licencia}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div th:if="${#fields.hasGlobalErrors()}" class="field-error" style="margin-top:0.8rem;">
+                        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                    </div>
+
+                    <div style="margin-top:1rem">
+                        <button class="login-button" type="submit" th:text="${submitLabel}">Crear prueba</button>
+                        <a class="nav-link" th:href="@{/pruebas}" style="margin-left:0.8rem;">Cancelar</a>
+                    </div>
+                </form>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

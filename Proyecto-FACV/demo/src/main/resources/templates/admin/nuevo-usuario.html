@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formTitle}">Usuario</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Administración</p>
+            <h1 th:text="${formTitle}">Usuario</h1>
+        </section>
+
+        <section class="page-section">
+            <article class="card panel">
+                <form th:action="${formAction}" method="post">
+
+                    <!-- Datos comunes -->
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="licencia">Licencia *</label>
+                            <input id="licencia" type="text" name="licencia" required
+                                   th:value="${usuario?.licencia}"
+                                   th:readonly="${usuario != null}" />
+                        </div>
+                        <div class="field">
+                            <label for="nombre">Nombre de usuario *</label>
+                            <input id="nombre" type="text" name="nombre" required th:value="${usuario?.nombre}" />
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="apellidos">Apellidos *</label>
+                            <input id="apellidos" type="text" name="apellidos" required th:value="${usuario?.apellidos}" />
+                        </div>
+                        <div class="field">
+                            <label for="email">Email *</label>
+                            <input id="email" type="email" name="email" required th:value="${usuario?.email}" />
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="telefono">Teléfono</label>
+                            <input id="telefono" type="text" name="telefono" th:value="${usuario?.telefono}" />
+                        </div>
+                        <div class="field">
+                            <label for="localidad">Localidad</label>
+                            <input id="localidad" type="text" name="localidad" th:value="${usuario?.localidad}" />
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="fechaNacimiento">Fecha de nacimiento</label>
+                            <input id="fechaNacimiento" type="date" name="fechaNacimiento"
+                                   th:value="${usuario?.fechaNacimiento != null ? #temporals.format(usuario.fechaNacimiento,'yyyy-MM-dd') : ''}" />
+                        </div>
+                        <div class="field">
+                            <label for="rol">Rol *</label>
+                            <select id="rol" name="rol" required onchange="toggleRolFields(this.value)"
+                                    th:disabled="${usuario != null}">
+                                <option value="">-- Selecciona rol --</option>
+                                <option th:each="r : ${roles}"
+                                        th:value="${r}"
+                                        th:text="${r}"
+                                        th:selected="${usuario != null and usuario.rol != null and usuario.rol == r}">
+                                </option>
+                            </select>
+                            <input th:if="${usuario != null}" type="hidden" name="rol" th:value="${usuario?.rol}" />
+                        </div>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="field">
+                        <label for="rawPassword">
+                            Contraseña
+                            <th:block th:if="${usuario != null}">
+                                <small>(dejar vacío para mantener la actual)</small>
+                            </th:block>
+                            <th:block th:unless="${usuario != null}">
+                                *
+                            </th:block>
+                        </label>
+                        <input id="rawPassword" type="password" name="rawPassword"
+                               th:required="${usuario == null}" autocomplete="new-password" />
+                    </div>
+
+                    <!-- Campos específicos por rol -->
+                    <div id="campo-federacion" class="field" style="display:none;">
+                        <label for="federacion">Federación <small>(OBSERVADOR)</small></label>
+                        <input id="federacion" type="text" name="federacion" th:value="${rolFederacion}" />
+                    </div>
+
+                    <div id="campo-club" class="field" style="display:none;">
+                        <label for="club">Club <small>(ORGANIZADOR / PILOTO)</small></label>
+                        <input id="club" type="text" name="club" th:value="${rolClub}" />
+                    </div>
+
+                    <div id="campo-carrerasGanadas" class="field" style="display:none;">
+                        <label for="carrerasGanadas">Carreras ganadas <small>(PILOTO)</small></label>
+                        <input id="carrerasGanadas" type="number" name="carrerasGanadas" min="0"
+                               th:value="${rolCarrerasGanadas ?: 0}" />
+                    </div>
+
+                    <div id="campo-nivelTecnico" class="field" style="display:none;">
+                        <label for="nivelTecnico">Nivel técnico (1-5) <small>(TECNICO)</small></label>
+                        <input id="nivelTecnico" type="number" name="nivelTecnico" min="1" max="5"
+                               th:value="${rolNivelTecnico}" />
+                    </div>
+
+                    <div id="campo-descripcion" class="field" style="display:none;">
+                        <label for="descripcion">Descripción <small>(TECNICO)</small></label>
+                        <input id="descripcion" type="text" name="descripcion" th:value="${rolDescripcion}" />
+                    </div>
+
+                    <div id="campo-presidenteFacv" class="field" style="display:none;">
+                        <label>
+                            <input id="presidenteFacv" type="checkbox" name="presidenteFacv" value="true"
+                                   th:checked="${rolPresidenteFacv == true}" />
+                            Presidente FACV <small>(ADMINISTRADOR)</small>
+                        </label>
+                    </div>
+
+                    <div id="campo-experiencia" class="field" style="display:none;">
+                        <label for="experiencia">Años de experiencia <small>(ADMINISTRADOR)</small></label>
+                        <input id="experiencia" type="number" name="experiencia" min="0"
+                               th:value="${rolExperiencia}" />
+                    </div>
+
+                    <div style="margin-top:1rem;">
+                        <button class="login-button" type="submit" th:text="${submitLabel}">Guardar</button>
+                        <a class="nav-link" th:href="@{/admin/usuarios}" style="margin-left:0.8rem;">Cancelar</a>
+                    </div>
+                </form>
+            </article>
+        </section>
+    </main>
+
+    <script th:inline="javascript">
+        function toggleRolFields(rol) {
+            document.getElementById('campo-federacion').style.display      = (rol === 'OBSERVADOR')                       ? '' : 'none';
+            document.getElementById('campo-club').style.display            = (rol === 'ORGANIZADOR' || rol === 'PILOTO')   ? '' : 'none';
+            document.getElementById('campo-carrerasGanadas').style.display = (rol === 'PILOTO')                            ? '' : 'none';
+            document.getElementById('campo-nivelTecnico').style.display    = (rol === 'TECNICO')                           ? '' : 'none';
+            document.getElementById('campo-descripcion').style.display     = (rol === 'TECNICO')                           ? '' : 'none';
+            document.getElementById('campo-presidenteFacv').style.display  = (rol === 'ADMINISTRADOR')                     ? '' : 'none';
+            document.getElementById('campo-experiencia').style.display     = (rol === 'ADMINISTRADOR')                     ? '' : 'none';
+        }
+        window.addEventListener('DOMContentLoaded', function() {
+            var rolActual = /*[[${usuario?.rol}]]*/ null;
+            if (rolActual) toggleRolFields(String(rolActual));
+        });
+    </script>
+</body>
+</html>

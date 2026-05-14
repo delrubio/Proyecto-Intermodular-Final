@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificaciones</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Verificaciones</p>
+            <h1>Verificaciones técnicas</h1>
+            <p>Control técnico de vehículos antes de las pruebas.</p>
+            <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:1rem;">
+                <a class="nav-link"
+                   th:if="${userRol == 'TECNICO'}"
+                   th:href="@{/verificaciones/seleccionar-prueba}">
+                    Nueva verificación
+                </a>
+                <a class="nav-link"
+                   th:if="${isAdmin}"
+                   th:href="@{/nueva-verificacion}">
+                    Nueva verificación (admin)
+                </a>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <div class="auth-message" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="auth-message" th:if="${errorMessage}" th:text="${errorMessage}" style="color:#ef5b2a;"></div>
+
+            <div th:if="${#lists.isEmpty(verificaciones)}">
+                <p>No hay verificaciones registradas.</p>
+            </div>
+
+            <div class="content-grid">
+                <div th:each="v : ${verificaciones}">
+                    <article class="card panel">
+                        <h3 th:text="${v.vehiculo.marca + ' ' + v.vehiculo.modelo + ' (' + v.vehiculo.matricula + ')'}">Vehículo</h3>
+                        <p><strong>Prueba:</strong> <span th:text="${v.prueba.nombre}"></span></p>
+                        <p><strong>Técnico 1:</strong> <span th:text="${v.tecnico1.nombre + ' ' + v.tecnico1.apellidos}"></span></p>
+                        <p th:if="${v.tecnico2 != null}"><strong>Técnico 2:</strong> <span th:text="${v.tecnico2.nombre + ' ' + v.tecnico2.apellidos}"></span></p>
+                        <p><strong>Resultado:</strong> <span th:text="${v.resultado ?: '—'}"></span></p>
+                        <p><strong>Fecha:</strong> <span th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy')}"></span></p>
+                        <div style="display:flex; gap:0.5rem; margin-top:0.8rem; flex-wrap:wrap; align-items:center;">
+                            <a class="nav-link" th:if="${v.resultado != null and v.resultado.name() == 'NO_APTO'}"
+                               th:href="@{/incidencias(matricula=${v.vehiculo.matricula})}"
+                               style="background:#7a2020; border-color:#7a2020;">Ver Incidencias</a>
+                            <div th:if="${isAdmin or userRol == 'TECNICO'}" style="display:contents;">
+                                <a class="nav-link" th:href="@{/verificaciones/{id}/editar(id=${v.id})}">Editar</a>
+                                <form th:action="@{/verificaciones/{id}/eliminar(id=${v.id})}" method="post" style="margin:0;">
+                                    <button class="logout-button" type="submit">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

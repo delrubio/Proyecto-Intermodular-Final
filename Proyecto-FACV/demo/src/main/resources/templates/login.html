@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="login-page">
+    <main class="login-card">
+        <p class="eyebrow">Federación Automovilismo Comunitat Valenciana</p>
+        <h1>Acceso al sistema</h1>
+        <p class="auth-message" th:if="${param.error}">Credenciales incorrectas.</p>
+        <p class="auth-message" th:if="${param.logout}">Sesión cerrada correctamente.</p>
+        <form th:action="@{/login}" method="post">
+            <div class="field">
+                <label for="username">Usuario</label>
+                <input id="username" type="text" name="username" placeholder="Introduce tu usuario" />
+            </div>
+            <div class="field">
+                <label for="password">Contraseña</label>
+                <input id="password" type="password" name="password" placeholder="Introduce tu contraseña" />
+            </div>
+            <button class="login-button" type="submit">Entrar</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formTitle}">Nuevo vehículo</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Vehículos</p>
+            <h1 th:text="${formTitle}">Crear nuevo vehículo</h1>
+            <p>Rellena los datos del vehículo.</p>
+        </section>
+
+        <section class="page-section">
+            <article class="card panel">
+                <div th:if="${successMessage}" class="auth-message" th:text="${successMessage}"></div>
+
+                <form th:action="${formAction}" th:object="${vehiculo}" method="post">
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="matricula">Matrícula</label>
+                            <input id="matricula" type="text" th:field="*{matricula}" required />
+                            <small class="field-error" th:if="${#fields.hasErrors('matricula')}" th:errors="*{matricula}"></small>
+                        </div>
+                        <div class="field">
+                            <label for="categoria">Categoría</label>
+                            <input id="categoria" type="text" th:field="*{categoria}" required />
+                            <small class="field-error" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></small>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="marca">Marca</label>
+                            <input id="marca" type="text" th:field="*{marca}" required />
+                            <small class="field-error" th:if="${#fields.hasErrors('marca')}" th:errors="*{marca}"></small>
+                        </div>
+                        <div class="field">
+                            <label for="modelo">Modelo</label>
+                            <input id="modelo" type="text" th:field="*{modelo}" required />
+                            <small class="field-error" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></small>
+                        </div>
+                    </div>
+
+                    <!-- Piloto: auto-asignado para PILOTO, seleccionable para ADMIN -->
+                    <div class="field" th:if="${isAdmin}">
+                        <label for="pilotoLicencia">Piloto *</label>
+                        <select id="pilotoLicencia" name="pilotoLicencia" required>
+                            <option value="">-- Selecciona piloto --</option>
+                            <option th:each="p : ${pilotos}"
+                                    th:value="${p.licencia}"
+                                    th:text="${p.nombre + ' ' + p.apellidos}"
+                                    th:selected="${vehiculo.piloto != null and vehiculo.piloto.licencia == p.licencia}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div th:if="${#fields.hasGlobalErrors()}" class="field-error" style="margin-top:0.8rem;">
+                        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                    </div>
+
+                    <div style="margin-top:1rem">
+                        <button class="login-button" type="submit" th:text="${submitLabel}">Crear vehículo</button>
+                        <a class="nav-link" th:href="@{/vehiculos}" style="margin-left:0.8rem;">Cancelar</a>
+                    </div>
+                </form>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscripciones</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Inscripciones</p>
+            <h1>Inscripciones en pruebas</h1>
+            <p>Registro de vehículos participantes en cada prueba.</p>
+            <div th:if="${isAdmin or userRol == 'PILOTO'}">
+                <a class="nav-link" th:href="@{/nueva-inscripcion}">Nueva inscripción</a>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <div class="auth-message" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="auth-message" th:if="${errorMessage}" th:text="${errorMessage}" style="color:#ef5b2a;"></div>
+
+            <div th:if="${#lists.isEmpty(inscripciones)}">
+                <p>No hay inscripciones registradas.</p>
+            </div>
+
+            <div class="content-grid">
+                <div th:each="i : ${inscripciones}">
+                    <article class="card panel">
+                        <h3 th:text="${i.prueba.nombre}">Prueba</h3>
+                        <p><strong>Vehículo:</strong> <span th:text="${i.vehiculo.marca + ' ' + i.vehiculo.modelo + ' (' + i.vehiculo.matricula + ')'}"></span></p>
+                        <p><strong>Piloto:</strong> <span th:text="${i.vehiculo.piloto != null ? i.vehiculo.piloto.nombre + ' ' + i.vehiculo.piloto.apellidos : '—'}"></span></p>
+                        <p><strong>Verificado:</strong> <span th:text="${i.verificado ? 'Sí' : 'No'}"></span></p>
+                        <p><strong>Apto:</strong> <span th:text="${i.apto != null ? (i.apto ? 'Sí' : 'No') : 'Pendiente'}"></span></p>
+                        <div th:if="${isAdmin}" style="margin-top:0.8rem;">
+                            <form th:action="@{/inscripciones/eliminar}" method="post" style="margin:0;">
+                                <input type="hidden" name="matricula" th:value="${i.id.matricula}" />
+                                <input type="hidden" name="pruebaId" th:value="${i.id.idPrueba}" />
+                                <button class="logout-button" type="submit">Eliminar</button>
+                            </form>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

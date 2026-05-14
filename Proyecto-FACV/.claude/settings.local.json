@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(gh repo *)",
+      "Bash(curl -s \"https://api.github.com/repos/delrubio/Material25-26/contents/EN-DWES\")",
+      "Bash(curl -s \"https://api.github.com/repos/delrubio/Material25-26/contents/EN-DWES/PU1\")",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(findstr /C:\"java\")",
+      "Bash(mvn clean *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto-FACV\\\\demo\\\\src\\\\main\\\\java\\\\com\\\\example\\\\demo\\\\\" -Recurse -File | Select-Object FullName)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto-FACV\\\\demo\\\\src\\\\main\\\\java\\\\com\\\\example\\\\demo\\\\model\\\\Inscripcion.java\" -Force)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto-FACV\\\\demo\\\\src\\\\main\\\\java\\\\com\\\\example\\\\demo\\\\model\\\\Verificacion.java\" -Force)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto-FACV\\\\demo\\\\src\\\\main\\\\java\\\\com\\\\example\\\\demo\\\\model\\\\Rol.java\" -Force)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto-FACV\\\\demo\\\\src\\\\main\\\\java\\\\com\\\\example\\\\demo\\\\enums\\\\Gravedad.java\" -Force)"
+    ]
+  }
+}

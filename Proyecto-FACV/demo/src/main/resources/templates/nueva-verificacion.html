@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formTitle}">Verificación</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Verificaciones</p>
+            <h1 th:text="${formTitle}">Nueva verificación</h1>
+        </section>
+
+        <section class="page-section">
+            <article class="card panel">
+                <form th:action="${formAction}" method="post">
+
+                    <input type="hidden" name="fromPruebaId" th:value="${preselectedPruebaId}" />
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="matricula">Vehículo</label>
+                            <select id="matricula" name="matricula" required>
+                                <option value="">-- Selecciona vehículo --</option>
+                                <option th:each="v : ${vehiculos}"
+                                        th:value="${v.matricula}"
+                                        th:text="${v.marca + ' ' + v.modelo + ' - ' + v.matricula}"
+                                        th:selected="${(verificacion != null and verificacion.vehiculo != null and verificacion.vehiculo.matricula == v.matricula)
+                                                    or (verificacion == null and preselectedVehiculoMatricula != null and preselectedVehiculoMatricula == v.matricula)}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="pruebaId">Prueba</label>
+                            <select id="pruebaId" name="pruebaId" required>
+                                <option value="">-- Selecciona prueba --</option>
+                                <option th:each="p : ${pruebas}"
+                                        th:value="${p.idPrueba}"
+                                        th:text="${p.nombre + ' (' + #temporals.format(p.fecha, 'dd/MM/yyyy') + ')'}"
+                                        th:selected="${(verificacion != null and verificacion.prueba != null and verificacion.prueba.idPrueba == p.idPrueba)
+                                                    or (verificacion == null and preselectedPruebaId != null and preselectedPruebaId == p.idPrueba)}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="resultado">Resultado</label>
+                            <select id="resultado" name="resultado">
+                                <option value="">-- Selecciona resultado --</option>
+                                <option th:each="r : ${resultados}"
+                                        th:value="${r}"
+                                        th:text="${r}"
+                                        th:selected="${verificacion != null and verificacion.resultado != null and verificacion.resultado == r}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="fecha">Fecha de verificación</label>
+                            <input id="fecha" type="date" name="fecha" required
+                                   th:value="${verificacion?.fecha != null ? #temporals.format(verificacion.fecha, 'yyyy-MM-dd') : ''}" />
+                        </div>
+                    </div>
+
+                    <!-- Técnico 1 solo editable por admin -->
+                    <div class="field" th:if="${isAdmin}">
+                        <label for="tecnico1Licencia">Técnico 1 *</label>
+                        <select id="tecnico1Licencia" name="tecnico1Licencia">
+                            <option value="">-- Técnico autenticado --</option>
+                            <option th:each="t : ${tecnicos}"
+                                    th:value="${t.licencia}"
+                                    th:text="${t.nombre + ' ' + t.apellidos}"
+                                    th:selected="${verificacion != null and verificacion.tecnico1 != null and verificacion.tecnico1.licencia == t.licencia}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="tecnico2Licencia">Técnico 2 (opcional)</label>
+                        <select id="tecnico2Licencia" name="tecnico2Licencia">
+                            <option value="">-- Sin técnico 2 --</option>
+                            <option th:each="t : ${tecnicos}"
+                                    th:value="${t.licencia}"
+                                    th:text="${t.nombre + ' ' + t.apellidos}"
+                                    th:selected="${verificacion != null and verificacion.tecnico2 != null and verificacion.tecnico2.licencia == t.licencia}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div style="margin-top:1rem">
+                        <button class="login-button" type="submit" th:text="${submitLabel}">Guardar</button>
+                        <a class="nav-link"
+                           th:href="${preselectedPruebaId != null ? '/verificaciones/pendientes?pruebaId=' + preselectedPruebaId : '/verificaciones'}"
+                           style="margin-left:0.8rem;">Cancelar</a>
+                    </div>
+                </form>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

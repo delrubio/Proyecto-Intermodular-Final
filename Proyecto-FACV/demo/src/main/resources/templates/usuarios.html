@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page page-section">
+        <section class="hero hero-section">
+            <p class="eyebrow">Automovilismo FACV</p>
+            <h1>Usuarios</h1>
+            <p>Gestión de usuarios registrados y permisos.</p>
+        </section>
+
+        <section class="page-section">
+            <form method="post" th:action="@{/findByName}" th:object="${searchForm}">
+                <label>Buscar por nombre:
+                    <input type="text" th:field="*{nombre}" placeholder="Ingrese nombre de usuario" />
+                </label>
+                <input type="submit" value="Buscar" />
+            </form>
+        </section>
+
+        <section class="content-grid">
+            <div th:if="${#lists.isEmpty(usuarios)}">
+                <p>No hay usuarios.</p>
+            </div>
+            <div th:each="u : ${usuarios}">
+                <article class="panel card">
+                    <h3 th:text="${u.nombre}">Usuario</h3>
+                    <p><strong>Email:</strong> <span th:text="${u.email}">email@example.com</span></p>
+                    <p><strong>Rol:</strong> <span th:text="${u.rol}">ROL</span></p>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

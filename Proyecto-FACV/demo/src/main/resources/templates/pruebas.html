@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Pruebas</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Pruebas</p>
+            <h1>Listado de pruebas</h1>
+            <p>Lista de pruebas disponibles en el sistema.</p>
+            <div th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}">
+                <a class="nav-link" th:href="@{/nueva-prueba}">Añadir prueba</a>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <form method="post" th:action="@{/findByTitle}" th:object="${searchForm}">
+                Buscar por nombre:
+                <div class="field">
+                    <input type="text" name="nombre" th:value="${searchForm?.nombre}" placeholder="Ingrese nombre de la prueba" />
+                    <input type="submit" value="Buscar" />
+                </div>
+            </form>
+        </section>
+
+        <section class="page-section">
+            <div class="auth-message" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="content-grid pruebas-grid">
+                <div th:if="${#lists.isEmpty(pruebas)}">
+                    <p>No hay pruebas aún.</p>
+                </div>
+                <div th:each="p : ${pruebas}">
+                    <article class="card panel">
+                        <div>
+                            <div>
+                                <h3 th:text="${p.nombre}">Nombre</h3>
+                                <p><strong>Fecha:</strong> <span th:text="${p.fecha}">2026-01-01</span></p>
+                                <p><strong>Localidad:</strong> <span th:text="${p.localidad}">Localidad</span></p>
+                                <p><strong>Campeonato:</strong> <span th:text="${p.campeonato}">Campeonato</span></p>
+                                <p><strong>Organizador:</strong> <span th:text="${p.organizador?.nombre}">Organizador</span></p>
+                                <p><strong>Inscritos:</strong> <span th:text="${p.nInscritos}">0</span></p>
+                                <div th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}"
+                                     style="display:flex; gap:0.5rem; margin-top:0.8rem; flex-wrap:wrap;">
+                                    <a class="nav-link" th:href="@{/pruebas/{id}/editar(id=${p.idPrueba})}">Editar</a>
+                                    <form th:action="@{/pruebas/{id}/eliminar(id=${p.idPrueba})}" method="post" style="margin:0;">
+                                        <button class="logout-button" type="submit">Eliminar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

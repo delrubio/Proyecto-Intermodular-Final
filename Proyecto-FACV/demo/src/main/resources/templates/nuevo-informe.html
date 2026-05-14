@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formTitle}">Informe</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="app-shell">
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">Informes</p>
+            <h1 th:text="${formTitle}">Nuevo informe</h1>
+        </section>
+
+        <section class="page-section">
+            <article class="card panel">
+                <form th:action="${formAction}" method="post">
+
+                    <div class="field-row">
+                        <div class="field" th:if="${informe == null}">
+                            <label for="pruebaId">Prueba</label>
+                            <select id="pruebaId" name="pruebaId" required>
+                                <option value="">-- Selecciona prueba --</option>
+                                <option th:each="p : ${pruebas}"
+                                        th:value="${p.idPrueba}"
+                                        th:text="${p.nombre + ' (' + #temporals.format(p.fecha, 'dd/MM/yyyy') + ')'}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="field" th:unless="${informe == null}">
+                            <label>Prueba</label>
+                            <input type="text" readonly
+                                   th:value="${informe.prueba != null ? informe.prueba.nombre : '—'}" />
+                        </div>
+                        <div class="field">
+                            <label for="fecha">Fecha del informe</label>
+                            <input id="fecha" type="date" name="fecha" required
+                                   th:value="${informe?.fecha != null ? #temporals.format(informe.fecha, 'yyyy-MM-dd') : ''}" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="puntuacionFinal">Puntuación final (0.0 – 9.9)</label>
+                        <input id="puntuacionFinal" type="number" name="puntuacionFinal"
+                               step="0.1" min="0" max="9.9"
+                               th:value="${informe?.puntuacionFinal}" />
+                    </div>
+
+                    <div class="field">
+                        <label for="contenido">Contenido</label>
+                        <textarea id="contenido" name="contenido" rows="8"
+                                  th:text="${informe?.contenido}"></textarea>
+                    </div>
+
+                    <div style="margin-top:1rem">
+                        <button class="login-button" type="submit" th:text="${submitLabel}">Guardar</button>
+                        <a class="nav-link" th:href="@{/informes}" style="margin-left:0.8rem;">Cancelar</a>
+                    </div>
+                </form>
+            </article>
+        </section>
+    </main>
+</body>
+</html>
