@@ -21,14 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class IncidenciaService {
 
-    @Autowired
-    IncidenciaRepository incidenciaRepository;
-    @Autowired
-    VehiculoRepository vehiculoRepository;
-    @Autowired
-    PruebaRepository pruebaRepository;
-    @Autowired
-    VerificacionTecnicaRepository verificacionTecnicaRepository;
+    @Autowired IncidenciaRepository incidenciaRepository;
+    @Autowired VehiculoRepository vehiculoRepository;
+    @Autowired PruebaRepository pruebaRepository;
+    @Autowired VerificacionTecnicaRepository verificacionTecnicaRepository;
 
     public List<Incidencia> findAll() {
         return incidenciaRepository.findAll();

@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,20 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class InscripcionService {
 
-    private final InscripcionPruebaRepository inscripcionRepo;
-    private final VehiculoRepository vehiculoRepo;
-    private final PruebaRepository pruebaRepo;
-    private final UsuarioRepository usuarioRepo;
-
-    public InscripcionService(InscripcionPruebaRepository inscripcionRepo,
-                              VehiculoRepository vehiculoRepo,
-                              PruebaRepository pruebaRepo,
-                              UsuarioRepository usuarioRepo) {
-        this.inscripcionRepo = inscripcionRepo;
-        this.vehiculoRepo = vehiculoRepo;
-        this.pruebaRepo = pruebaRepo;
-        this.usuarioRepo = usuarioRepo;
-    }
+    @Autowired InscripcionPruebaRepository inscripcionRepo;
+    @Autowired VehiculoRepository vehiculoRepo;
+    @Autowired PruebaRepository pruebaRepo;
+    @Autowired UsuarioRepository usuarioRepo;
 
     public List<InscripcionPrueba> findAll() {
         Usuario usuario = obtenerUsuarioAutenticado();

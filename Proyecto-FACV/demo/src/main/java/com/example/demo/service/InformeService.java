@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,17 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class InformeService {
 
-    private final InformeRepository informeRepository;
-    private final PruebaRepository pruebaRepository;
-    private final UsuarioRepository usuarioRepository;
-
-    public InformeService(InformeRepository informeRepository,
-                          PruebaRepository pruebaRepository,
-                          UsuarioRepository usuarioRepository) {
-        this.informeRepository = informeRepository;
-        this.pruebaRepository = pruebaRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
+    @Autowired InformeRepository informeRepository;
+    @Autowired PruebaRepository pruebaRepository;
+    @Autowired UsuarioRepository usuarioRepository;
 
     public List<Informe> findAll() {
         log.info("InformeService - Obteniendo todos los informes");

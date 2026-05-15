@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,29 +33,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class VerificacionService {
 
-    private final VerificacionTecnicaRepository verificacionRepo;
-    private final VehiculoRepository vehiculoRepo;
-    private final PruebaRepository pruebaRepo;
-    private final UsuarioRepository usuarioRepo;
-    private final TecnicoRepository tecnicoRepo;
-    private final InscripcionPruebaRepository inscripcionRepo;
-    private final IncidenciaRepository incidenciaRepo;
-
-    public VerificacionService(VerificacionTecnicaRepository verificacionRepo,
-                               VehiculoRepository vehiculoRepo,
-                               PruebaRepository pruebaRepo,
-                               UsuarioRepository usuarioRepo,
-                               TecnicoRepository tecnicoRepo,
-                               InscripcionPruebaRepository inscripcionRepo,
-                               IncidenciaRepository incidenciaRepo) {
-        this.verificacionRepo = verificacionRepo;
-        this.vehiculoRepo = vehiculoRepo;
-        this.pruebaRepo = pruebaRepo;
-        this.usuarioRepo = usuarioRepo;
-        this.tecnicoRepo = tecnicoRepo;
-        this.inscripcionRepo = inscripcionRepo;
-        this.incidenciaRepo = incidenciaRepo;
-    }
+    @Autowired VerificacionTecnicaRepository verificacionRepo;
+    @Autowired VehiculoRepository vehiculoRepo;
+    @Autowired PruebaRepository pruebaRepo;
+    @Autowired UsuarioRepository usuarioRepo;
+    @Autowired TecnicoRepository tecnicoRepo;
+    @Autowired InscripcionPruebaRepository inscripcionRepo;
+    @Autowired IncidenciaRepository incidenciaRepo;
 
     public List<VerificacionTecnica> findAll() {
         log.info("VerificacionService - Obteniendo todas las verificaciones");

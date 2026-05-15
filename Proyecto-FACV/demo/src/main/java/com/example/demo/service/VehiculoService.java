@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,17 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class VehiculoService {
 
-    private final VehiculoRepository vehiculoRepository;
-    private final UsuarioRepository usuarioRepository;
-    private final PilotoRepository pilotoRepository;
-
-    public VehiculoService(VehiculoRepository vehiculoRepository,
-                           UsuarioRepository usuarioRepository,
-                           PilotoRepository pilotoRepository) {
-        this.vehiculoRepository = vehiculoRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.pilotoRepository = pilotoRepository;
-    }
+    @Autowired VehiculoRepository vehiculoRepository;
+    @Autowired UsuarioRepository usuarioRepository;
+    @Autowired PilotoRepository pilotoRepository;
 
     public List<Vehiculo> findAll() {
         log.info("VehiculoService - Obteniendo listado de todos los vehículos");
@@ -43,6 +36,9 @@ public class VehiculoService {
     }
 
     public Vehiculo save(Vehiculo vehiculo, String pilotoLicencia) {
+        if (vehiculoRepository.existsById(vehiculo.getMatricula().trim())) {
+            throw new IllegalArgumentException("Ya existe un vehículo con la matrícula: " + vehiculo.getMatricula());
+        }
         Piloto piloto;
         if (pilotoLicencia != null && !pilotoLicencia.isBlank()) {
             piloto = pilotoRepository.findById(pilotoLicencia)
