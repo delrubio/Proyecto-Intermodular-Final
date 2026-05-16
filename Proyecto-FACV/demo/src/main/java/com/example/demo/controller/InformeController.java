@@ -1,17 +1,15 @@
 package com.example.demo.controller;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.dto.InformeForm;
 import com.example.demo.service.InformeService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class InformeController {
 
-    private final InformeService informeService;
-
-    public InformeController(InformeService informeService) {
-        this.informeService = informeService;
-    }
+    @Autowired InformeService informeService;
 
     @GetMapping("/informes")
     public String listar(Model model) {
@@ -43,14 +37,9 @@ public class InformeController {
     }
 
     @PostMapping("/nuevo-informe")
-    public String crear(
-            @RequestParam Integer pruebaId,
-            @RequestParam(required = false) String contenido,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-            @RequestParam(required = false) BigDecimal puntuacionFinal,
-            RedirectAttributes redirectAttributes) {
+    public String crear(@ModelAttribute InformeForm form, RedirectAttributes redirectAttributes) {
         try {
-            informeService.save(pruebaId, contenido, fecha, puntuacionFinal);
+            informeService.save(form.getPruebaId(), form.getContenido(), form.getFecha(), form.getPuntuacionFinal());
             redirectAttributes.addFlashAttribute("successMessage", "Informe creado correctamente");
         } catch (Exception ex) {
             log.error("InformeController - Error: {}", ex.getMessage());
@@ -72,14 +61,9 @@ public class InformeController {
     }
 
     @PostMapping("/informes/{id}/editar")
-    public String editar(
-            @PathVariable Integer id,
-            @RequestParam(required = false) String contenido,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-            @RequestParam(required = false) BigDecimal puntuacionFinal,
-            RedirectAttributes redirectAttributes) {
+    public String editar(@PathVariable Integer id, @ModelAttribute InformeForm form, RedirectAttributes redirectAttributes) {
         try {
-            informeService.update(id, contenido, fecha, puntuacionFinal);
+            informeService.update(id, form.getContenido(), form.getFecha(), form.getPuntuacionFinal());
             redirectAttributes.addFlashAttribute("successMessage", "Informe actualizado correctamente");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar: " + ex.getMessage());

@@ -1,14 +1,16 @@
 package com.example.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.enums.Estado;
+import com.example.demo.dto.IncidenciaForm;
 import com.example.demo.model.Incidencia;
 import com.example.demo.service.IncidenciaService;
 
@@ -18,11 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class IncidenciaController {
 
-    private final IncidenciaService incidenciaService;
-
-    public IncidenciaController(IncidenciaService incidenciaService) {
-        this.incidenciaService = incidenciaService;
-    }
+    @Autowired IncidenciaService incidenciaService;
 
     @GetMapping("/incidencias")
     public String listar(@RequestParam(required = false) String matricula, Model model) {
@@ -55,23 +53,17 @@ public class IncidenciaController {
     }
 
     @PostMapping("/incidencias/{id}/editar")
-    public String editar(
-            @PathVariable Integer id,
-            @RequestParam String descripcionIncidencia,
-            @RequestParam Estado estado,
-            RedirectAttributes redirectAttributes) {
+    public String editar(@PathVariable Integer id, @ModelAttribute IncidenciaForm form, RedirectAttributes redirectAttributes) {
         Incidencia existente = incidenciaService.findById(id);
         String matricula = (existente != null && existente.getVehiculo() != null)
                 ? existente.getVehiculo().getMatricula() : null;
         try {
-            incidenciaService.update(id, descripcionIncidencia, estado);
+            incidenciaService.update(id, form.getDescripcionIncidencia(), form.getEstado());
             redirectAttributes.addFlashAttribute("successMessage", "Incidencia actualizada correctamente");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar: " + ex.getMessage());
         }
-        return matricula != null
-                ? "redirect:/incidencias?matricula=" + matricula
-                : "redirect:/incidencias";
+        return matricula != null ? "redirect:/incidencias?matricula=" + matricula : "verificaciones";
     }
 
     @PostMapping("/incidencias/{id}/eliminar")
@@ -83,8 +75,6 @@ public class IncidenciaController {
             incidenciaService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Incidencia eliminada correctamente");
         }
-        return matricula != null
-                ? "redirect:/incidencias?matricula=" + matricula
-                : "redirect:/incidencias";
+        return matricula != null ? "redirect:/incidencias?matricula=" + matricula : "redirect:/incidencias";
     }
 }

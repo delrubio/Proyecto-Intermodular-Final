@@ -1,12 +1,14 @@
 package com.example.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.dto.InscripcionForm;
 import com.example.demo.model.InscripcionPruebaId;
 import com.example.demo.service.InscripcionService;
 
@@ -16,11 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class InscripcionController {
 
-    private final InscripcionService inscripcionService;
-
-    public InscripcionController(InscripcionService inscripcionService) {
-        this.inscripcionService = inscripcionService;
-    }
+    @Autowired InscripcionService inscripcionService;
 
     @GetMapping("/inscripciones")
     public String listar(Model model) {
@@ -37,12 +35,9 @@ public class InscripcionController {
     }
 
     @PostMapping("/nueva-inscripcion")
-    public String crear(
-            @RequestParam String matricula,
-            @RequestParam Integer pruebaId,
-            RedirectAttributes redirectAttributes) {
+    public String crear(@ModelAttribute InscripcionForm form, RedirectAttributes redirectAttributes) {
         try {
-            inscripcionService.save(matricula, pruebaId);
+            inscripcionService.save(form.getMatricula(), form.getPruebaId());
             redirectAttributes.addFlashAttribute("successMessage", "Inscripción realizada correctamente");
         } catch (Exception ex) {
             log.error("InscripcionController - Error: {}", ex.getMessage());
@@ -52,11 +47,8 @@ public class InscripcionController {
     }
 
     @PostMapping("/inscripciones/eliminar")
-    public String eliminar(
-            @RequestParam String matricula,
-            @RequestParam Integer pruebaId,
-            RedirectAttributes redirectAttributes) {
-        InscripcionPruebaId id = new InscripcionPruebaId(matricula, pruebaId);
+    public String eliminar(@ModelAttribute InscripcionForm form, RedirectAttributes redirectAttributes) {
+        InscripcionPruebaId id = new InscripcionPruebaId(form.getMatricula(), form.getPruebaId());
         if (inscripcionService.findById(id) != null) {
             inscripcionService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Inscripción eliminada correctamente");

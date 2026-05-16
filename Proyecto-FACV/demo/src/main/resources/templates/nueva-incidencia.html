@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Incidencias</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -10,14 +11,18 @@
 
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">Incidencias</p>
-            <h1>Incidencias automáticas</h1>
-            <p>Las incidencias se generan automáticamente al registrar una verificación técnica con resultado NO_APTO.</p>
-            <div style="margin-top:1rem;">
-                <a class="nav-link" th:href="@{/verificaciones}">Ir a verificaciones</a>
-                <a class="nav-link" th:href="@{/incidencias}" style="margin-left:0.8rem;">Ver incidencias</a>
+            <div class="hero-text">
+                <p class="eyebrow">Incidencias</p>
+                <h1>Incidencias automáticas</h1>
+                <p>Las incidencias se generan automáticamente al registrar una verificación técnica con resultado NO_APTO.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="facv-btn-secondary" th:href="@{/verificaciones}">Ir a verificaciones</a>
+                <a class="facv-btn-neutral" th:href="@{/incidencias}">Ver incidencias</a>
             </div>
         </section>
     </main>
+
+    <script th:src="@{/js/facv-toasts.js}"></script>
 </body>
 </html>

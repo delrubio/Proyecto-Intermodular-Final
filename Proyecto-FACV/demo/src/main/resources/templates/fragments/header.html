@@ -1,54 +1,68 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <header th:fragment="siteHeader" class="topbar">
-        <a class="brand" th:href="@{/}">
-            <span class="brand-mark">FACV</span>
-            <span class="brand-text">Rallye Manager</span>
-        </a>
+    <th:block th:fragment="siteHeader">
+        <header class="topbar">
+            <a class="brand" th:href="@{/}">
+                <img class="brand-logo"
+                     src="https://fedacv.com/wp-content/uploads/2025/05/FEDACV-Logo-bueno-1024x368.webp"
+                     alt="FEDACV">
+            </a>
 
-        <nav class="nav">
-            <a class="nav-link" th:href="@{/}">Inicio</a>
+            <nav class="nav">
+                <a class="nav-link" th:href="@{/}">Inicio</a>
 
-            <!-- ADMINISTRADOR: acceso total -->
-            <th:block th:if="${userRol == 'ADMINISTRADOR'}">
-                <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
-                <a class="nav-link" th:href="@{/vehiculos}">Vehículos</a>
-                <a class="nav-link" th:href="@{/verificaciones}">Verificaciones</a>
-                <a class="nav-link" th:href="@{/inscripciones}">Inscripciones</a>
-                <a class="nav-link" th:href="@{/informes}">Informes</a>
-                <a class="nav-link" th:href="@{/admin/usuarios}">Usuarios</a>
-            </th:block>
+                <th:block th:if="${userRol == 'ADMINISTRADOR'}">
+                    <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
+                    <a class="nav-link" th:href="@{/vehiculos}">Vehículos</a>
+                    <a class="nav-link" th:href="@{/verificaciones}">Verificaciones</a>
+                    <a class="nav-link" th:href="@{/inscripciones}">Inscripciones</a>
+                    <a class="nav-link" th:href="@{/informes}">Informes</a>
+                    <a class="nav-link" th:href="@{/admin/usuarios}">Usuarios</a>
+                </th:block>
 
-            <!-- ORGANIZADOR: pruebas + inscripciones (ver) -->
-            <th:block th:if="${userRol == 'ORGANIZADOR'}">
-                <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
-                <a class="nav-link" th:href="@{/inscripciones}">Inscripciones</a>
-            </th:block>
+                <th:block th:if="${userRol == 'ORGANIZADOR'}">
+                    <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
+                    <a class="nav-link" th:href="@{/inscripciones}">Inscripciones</a>
+                </th:block>
 
-            <!-- PILOTO: vehículos, pruebas, inscripciones -->
-            <th:block th:if="${userRol == 'PILOTO'}">
-                <a class="nav-link" th:href="@{/vehiculos}">Vehículos</a>
-                <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
-                <a class="nav-link" th:href="@{/inscripciones}">Inscripciones</a>
-            </th:block>
+                <th:block th:if="${userRol == 'PILOTO'}">
+                    <a class="nav-link" th:href="@{/vehiculos}">Vehículos</a>
+                    <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
+                    <a class="nav-link" th:href="@{/inscripciones}">Inscripciones</a>
+                </th:block>
 
-            <!-- TECNICO: flujo verificación -->
-            <th:block th:if="${userRol == 'TECNICO'}">
-                <a class="nav-link" th:href="@{/verificaciones}">Verificaciones</a>
-            </th:block>
+                <th:block th:if="${userRol == 'TECNICO'}">
+                    <a class="nav-link" th:href="@{/verificaciones}">Verificaciones</a>
+                </th:block>
 
-            <!-- OBSERVADOR: pruebas, verificaciones, informes -->
-            <th:block th:if="${userRol == 'OBSERVADOR'}">
-                <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
-                <a class="nav-link" th:href="@{/verificaciones}">Verificaciones</a>
-                <a class="nav-link" th:href="@{/informes}">Informes</a>
-            </th:block>
-        </nav>
+                <th:block th:if="${userRol == 'OBSERVADOR'}">
+                    <a class="nav-link" th:href="@{/pruebas}">Pruebas</a>
+                    <a class="nav-link" th:href="@{/verificaciones}">Verificaciones</a>
+                    <a class="nav-link" th:href="@{/informes}">Informes</a>
+                </th:block>
+            </nav>
 
-        <form class="logout-form" th:action="@{/logout}" method="post">
-            <button type="submit" class="logout-button">Salir</button>
-        </form>
-    </header>
+            <div class="topbar-user" th:if="${usuarioNombre != null and !#strings.isEmpty(usuarioNombre)}">
+                <span class="topbar-user-name" th:text="${usuarioNombre}">Usuario</span>
+                <span class="topbar-user-role" th:text="${userRol}">Rol</span>
+            </div>
+
+            <form class="logout-form" th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-button">Salir</button>
+            </form>
+        </header>
+
+        <div id="facv-toast-container"></div>
+
+        <span th:if="${successMessage}" id="flash-success"
+              th:data-msg="${successMessage}" class="facv-flash-span"></span>
+        <span th:if="${errorMessage}" id="flash-error"
+              th:data-msg="${errorMessage}" class="facv-flash-span"></span>
+        <span th:if="${warningMessage}" id="flash-warning"
+              th:data-msg="${warningMessage}" class="facv-flash-span"></span>
+        <span th:if="${infoMessage}" id="flash-info"
+              th:data-msg="${infoMessage}" class="facv-flash-span"></span>
+    </th:block>
 </body>
 </html>

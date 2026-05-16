@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.enums.Estado;
 import com.example.demo.enums.ResultadoVerificacion;
 import com.example.demo.model.Incidencia;
+import com.example.demo.model.InscripcionPruebaId;
 import com.example.demo.model.Prueba;
 import com.example.demo.model.Tecnico;
 import com.example.demo.model.Usuario;
@@ -79,6 +80,15 @@ public class VerificacionService {
         log.info("VerificacionService - Guardando verificación para vehículo: {}", matricula);
         VerificacionTecnica saved = verificacionRepo.save(v);
 
+        // Actualizar el estado de la inscripción correspondiente
+        InscripcionPruebaId inscripcionId = new InscripcionPruebaId(matricula, pruebaId);
+        inscripcionRepo.findById(inscripcionId).ifPresent(inscripcion -> {
+            inscripcion.setVerificado(true);
+            inscripcion.setApto(saved.getResultado() == ResultadoVerificacion.APTO);
+            inscripcionRepo.save(inscripcion);
+            log.info("VerificacionService - InscripcionPrueba actualizada: verificado=true, apto={}", inscripcion.getApto());
+        });
+
         if (saved.getResultado() == ResultadoVerificacion.NO_APTO) {
             Incidencia inc = new Incidencia();
             inc.setVerificacion(saved);
@@ -121,7 +131,19 @@ public class VerificacionService {
         }
 
         log.info("VerificacionService - Actualizando verificación ID: {}", id);
-        return verificacionRepo.save(existente);
+        VerificacionTecnica updated = verificacionRepo.save(existente);
+
+        // Sincronizar el campo apto de la inscripción cuando cambia el resultado
+        if (updated.getVehiculo() != null && updated.getPrueba() != null) {
+            InscripcionPruebaId inscripcionId = new InscripcionPruebaId(
+                    updated.getVehiculo().getMatricula(), updated.getPrueba().getIdPrueba());
+            inscripcionRepo.findById(inscripcionId).ifPresent(inscripcion -> {
+                inscripcion.setApto(updated.getResultado() == ResultadoVerificacion.APTO);
+                inscripcionRepo.save(inscripcion);
+            });
+        }
+
+        return updated;
     }
 
     public void deleteById(Integer id) {

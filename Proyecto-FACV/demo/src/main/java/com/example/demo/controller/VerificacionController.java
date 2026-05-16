@@ -1,16 +1,16 @@
 package com.example.demo.controller;
 
-import java.time.LocalDate;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.dto.VerificacionForm;
 import com.example.demo.enums.ResultadoVerificacion;
 import com.example.demo.service.VerificacionService;
 
@@ -20,11 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class VerificacionController {
 
-    private final VerificacionService verificacionService;
-
-    public VerificacionController(VerificacionService verificacionService) {
-        this.verificacionService = verificacionService;
-    }
+    @Autowired VerificacionService verificacionService;
 
     @GetMapping("/verificaciones")
     public String listar(Model model) {
@@ -60,7 +56,11 @@ public class VerificacionController {
             @RequestParam(required = false) String vehiculoMatricula,
             @RequestParam(required = false) Integer pruebaId,
             Model model) {
-        model.addAttribute("vehiculos", verificacionService.getAllVehiculos());
+        if (pruebaId != null) {
+            model.addAttribute("vehiculos", verificacionService.getVehiculosPendientesPorPrueba(pruebaId));
+        } else {
+            model.addAttribute("vehiculos", verificacionService.getAllVehiculos());
+        }
         model.addAttribute("pruebas", verificacionService.getAllPruebas());
         model.addAttribute("tecnicos", verificacionService.getAllTecnicos());
         model.addAttribute("resultados", ResultadoVerificacion.values());
@@ -73,23 +73,16 @@ public class VerificacionController {
     }
 
     @PostMapping("/nueva-verificacion")
-    public String crear(
-            @RequestParam String matricula,
-            @RequestParam Integer pruebaId,
-            @RequestParam(required = false) String resultado,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-            @RequestParam(required = false) String tecnico2Licencia,
-            @RequestParam(required = false) String tecnico1Licencia,
-            @RequestParam(required = false) Integer fromPruebaId,
-            RedirectAttributes redirectAttributes) {
+    public String crear(@ModelAttribute VerificacionForm form, RedirectAttributes redirectAttributes) {
         try {
-            verificacionService.save(matricula, pruebaId, resultado, fecha, tecnico2Licencia, tecnico1Licencia);
+            verificacionService.save(form.getMatricula(), form.getPruebaId(), form.getResultado(),
+                    form.getFecha(), form.getTecnico2Licencia(), form.getTecnico1Licencia());
             redirectAttributes.addFlashAttribute("successMessage", "Verificación creada correctamente");
         } catch (Exception ex) {
             log.error("VerificacionController - Error: {}", ex.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + ex.getMessage());
         }
-        if (fromPruebaId != null) return "redirect:/verificaciones/pendientes?pruebaId=" + fromPruebaId;
+        if (form.getFromPruebaId() != null) return "redirect:/verificaciones/pendientes?pruebaId=" + form.getFromPruebaId();
         return "redirect:/verificaciones";
     }
 
@@ -113,17 +106,10 @@ public class VerificacionController {
     }
 
     @PostMapping("/verificaciones/{id}/editar")
-    public String editar(
-            @PathVariable Integer id,
-            @RequestParam String matricula,
-            @RequestParam Integer pruebaId,
-            @RequestParam(required = false) String resultado,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-            @RequestParam(required = false) String tecnico2Licencia,
-            @RequestParam(required = false) String tecnico1Licencia,
-            RedirectAttributes redirectAttributes) {
+    public String editar(@PathVariable Integer id, @ModelAttribute VerificacionForm form, RedirectAttributes redirectAttributes) {
         try {
-            verificacionService.update(id, matricula, pruebaId, resultado, fecha, tecnico2Licencia, tecnico1Licencia);
+            verificacionService.update(id, form.getMatricula(), form.getPruebaId(), form.getResultado(),
+                    form.getFecha(), form.getTecnico2Licencia(), form.getTecnico1Licencia());
             redirectAttributes.addFlashAttribute("successMessage", "Verificación actualizada correctamente");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar: " + ex.getMessage());

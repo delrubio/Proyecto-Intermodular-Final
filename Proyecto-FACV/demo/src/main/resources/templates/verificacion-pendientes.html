@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vehículos pendientes</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -10,51 +11,60 @@
 
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">Verificaciones · Paso 2 de 2</p>
-            <h1 th:text="'Pendientes — ' + ${prueba.nombre}">Pendientes</h1>
-            <p th:text="${#temporals.format(prueba.fecha, 'dd/MM/yyyy') + ' · ' + (prueba.localidad ?: '')}">Fecha · Localidad</p>
-            <div style="margin-top:1rem;">
-                <a class="nav-link" th:href="@{/verificaciones/seleccionar-prueba}">← Cambiar prueba</a>
+            <div class="hero-text">
+                <p class="eyebrow">Verificaciones · Paso 2 de 2</p>
+                <h1 th:text="'Pendientes — ' + ${prueba.nombre}">Pendientes</h1>
+                <p th:text="${#temporals.format(prueba.fecha, 'dd/MM/yyyy') + ' · ' + (prueba.localidad ?: '')}">Fecha · Localidad</p>
+            </div>
+            <div class="hero-actions">
+                <a class="facv-btn-neutral" th:href="@{/verificaciones/seleccionar-prueba}">← Cambiar prueba</a>
             </div>
         </section>
 
-        <section class="page-section">
-            <div th:if="${#lists.isEmpty(vehiculosPendientes)}">
-                <article class="card panel" style="padding:2rem;">
-                    <p style="font-size:1.1rem; margin-bottom:0.8rem;">
-                        No hay vehículos pendientes de verificación para esta prueba.
-                    </p>
-                    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1rem;">
-                        Posibles causas: todos los vehículos ya han sido verificados,
-                        o aún no se han inscrito vehículos en esta prueba
-                        (las inscripciones se gestionan desde la sección <strong>Inscripciones</strong>).
-                    </p>
-                    <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
-                        <a class="nav-link" th:href="@{/inscripciones}">Ver inscripciones</a>
-                        <a class="nav-link" th:href="@{/verificaciones}">Ver verificaciones</a>
-                    </div>
-                </article>
+        <div th:if="${#lists.isEmpty(vehiculosPendientes)}" class="card panel">
+            <p style="font-size:1rem; margin-bottom:0.6rem; font-weight:600; color:var(--facv-text-navy);">
+                No hay vehículos pendientes de verificación para esta prueba.
+            </p>
+            <p style="color:var(--facv-text-muted); font-size:0.9rem; margin-bottom:1rem;">
+                Todos los vehículos han sido verificados, o aún no hay inscritos en esta prueba.
+                Las inscripciones se gestionan desde la sección <strong>Inscripciones</strong>.
+            </p>
+            <div class="facv-form-actions">
+                <a class="facv-btn-secondary" th:href="@{/inscripciones}">Ver inscripciones</a>
+                <a class="facv-btn-neutral" th:href="@{/verificaciones}">Ver verificaciones</a>
             </div>
+        </div>
 
-            <div class="content-grid" th:unless="${#lists.isEmpty(vehiculosPendientes)}">
-                <div th:each="v : ${vehiculosPendientes}">
-                    <article class="card panel">
-                        <h3 th:text="${v.marca + ' ' + v.modelo}">Vehículo</h3>
-                        <p><strong>Matrícula:</strong> <span th:text="${v.matricula}"></span></p>
-                        <p><strong>Categoría:</strong> <span th:text="${v.categoria}"></span></p>
-                        <p th:if="${v.piloto != null}">
-                            <strong>Piloto:</strong> <span th:text="${v.piloto.nombre + ' ' + v.piloto.apellidos}"></span>
-                        </p>
-                        <div style="margin-top:0.8rem;">
-                            <a class="nav-link"
+        <div class="facv-table-wrapper" th:unless="${#lists.isEmpty(vehiculosPendientes)}">
+            <table class="facv-table">
+                <thead>
+                    <tr>
+                        <th>Vehículo</th>
+                        <th>Matrícula</th>
+                        <th>Categoría</th>
+                        <th>Piloto</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="v : ${vehiculosPendientes}">
+                        <td data-label="Vehículo" th:text="${v.marca + ' ' + v.modelo}">Vehículo</td>
+                        <td data-label="Matrícula" th:text="${v.matricula}">MAT</td>
+                        <td data-label="Categoría" th:text="${v.categoria}">Cat</td>
+                        <td data-label="Piloto"
+                            th:text="${v.piloto != null ? v.piloto.nombre + ' ' + v.piloto.apellidos : '—'}">Piloto</td>
+                        <td data-label="Acción">
+                            <a class="facv-btn-primary"
                                th:href="@{/nueva-verificacion(vehiculoMatricula=${v.matricula},pruebaId=${pruebaId},fromPruebaId=${pruebaId})}">
                                 Verificar
                             </a>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
+
+    <script th:src="@{/js/facv-toasts.js}"></script>
 </body>
 </html>

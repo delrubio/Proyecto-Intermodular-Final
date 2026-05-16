@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestión de Usuarios</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -10,84 +11,84 @@
 
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">Administración</p>
-            <h1>Gestión de usuarios</h1>
-            <p>Panel de administración de todos los usuarios del sistema.</p>
-            <div style="margin-top:1rem;">
-                <a class="nav-link" th:href="@{/admin/usuarios/nuevo}">+ Nuevo usuario</a>
+            <div class="hero-text">
+                <p class="eyebrow">Administración</p>
+                <h1>Gestión de usuarios</h1>
+                <p>Panel de administración de todos los usuarios del sistema.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="facv-btn-primary" th:href="@{/admin/usuarios/nuevo}">+ Nuevo usuario</a>
             </div>
         </section>
 
-        <section class="page-section">
-            <div class="auth-message" th:if="${successMessage}" th:text="${successMessage}"></div>
-            <div class="auth-message" th:if="${errorMessage}" th:text="${errorMessage}" style="color:#ef5b2a;"></div>
-
-            <!-- Filtros -->
-            <article class="card panel" style="margin-bottom:1.5rem;">
-                <form th:action="@{/admin/usuarios}" method="get" style="display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end;">
-                    <div class="field" style="flex:1; min-width:180px;">
-                        <label for="busqueda">Buscar</label>
-                        <input id="busqueda" type="text" name="busqueda"
-                               placeholder="Nombre, apellidos, email, licencia..."
-                               th:value="${busqueda}" />
-                    </div>
-                    <div class="field" style="flex:0 0 160px;">
-                        <label for="rol">Rol</label>
-                        <select id="rol" name="rol">
-                            <option value="">Todos los roles</option>
-                            <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
-                                    th:selected="${r.name() == rolFiltro}">
-                            </option>
-                        </select>
-                    </div>
-                    <div>
-                        <button class="login-button" type="submit">Filtrar</button>
-                        <a class="nav-link" th:href="@{/admin/usuarios}" style="margin-left:0.5rem;">Limpiar</a>
-                    </div>
-                </form>
-            </article>
-
-            <!-- Tabla de usuarios -->
-            <div th:if="${#lists.isEmpty(usuarios)}">
-                <p>No se encontraron usuarios.</p>
+        <form th:action="@{/admin/usuarios}" method="get">
+            <div class="facv-search-bar">
+                <div class="facv-search-input-group">
+                    <label class="facv-search-label">Buscar</label>
+                    <input type="text" class="facv-input" name="busqueda"
+                           placeholder="Nombre, apellidos, email, licencia..."
+                           th:value="${busqueda}">
+                </div>
+                <div class="facv-search-filter-group">
+                    <label class="facv-search-label">Rol</label>
+                    <select class="facv-select" name="rol">
+                        <option value="">Todos los roles</option>
+                        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
+                                th:selected="${r.name() == rolFiltro}">
+                        </option>
+                    </select>
+                </div>
+                <div class="facv-search-actions">
+                    <button type="submit" class="facv-btn-primary">Filtrar</button>
+                    <a class="facv-btn-neutral" th:href="@{/admin/usuarios}">Limpiar</a>
+                </div>
             </div>
+        </form>
 
-            <article class="card panel" th:unless="${#lists.isEmpty(usuarios)}" style="overflow-x:auto;">
-                <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
-                    <thead>
-                        <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.1);">
-                            <th style="padding:0.6rem 0.8rem;">Licencia</th>
-                            <th style="padding:0.6rem 0.8rem;">Nombre</th>
-                            <th style="padding:0.6rem 0.8rem;">Apellidos</th>
-                            <th style="padding:0.6rem 0.8rem;">Email</th>
-                            <th style="padding:0.6rem 0.8rem;">Rol</th>
-                            <th style="padding:0.6rem 0.8rem;">Localidad</th>
-                            <th style="padding:0.6rem 0.8rem;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="u : ${usuarios}"
-                            style="border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <td style="padding:0.6rem 0.8rem;" th:text="${u.licencia ?: '—'}">LIC</td>
-                            <td style="padding:0.6rem 0.8rem;" th:text="${u.nombre}">Nombre</td>
-                            <td style="padding:0.6rem 0.8rem;" th:text="${u.apellidos}">Apellidos</td>
-                            <td style="padding:0.6rem 0.8rem;" th:text="${u.email}">Email</td>
-                            <td style="padding:0.6rem 0.8rem;">
-                                <span th:text="${u.rol}" style="font-weight:600;"></span>
-                            </td>
-                            <td style="padding:0.6rem 0.8rem;" th:text="${u.localidad ?: '—'}">Localidad</td>
-                            <td style="padding:0.6rem 0.8rem; display:flex; gap:0.4rem; flex-wrap:wrap;">
-                                <a class="nav-link" th:href="@{/admin/usuarios/{lic}/editar(lic=${u.licencia})}">Editar</a>
-                                <form th:action="@{/admin/usuarios/{lic}/eliminar(lic=${u.licencia})}" method="post" style="margin:0;"
-                                      onsubmit="return confirm('¿Eliminar usuario ' + /*[[${u.nombre}]]*/ '' + '? Esta acción no se puede deshacer.')">
-                                    <button class="logout-button" type="submit">Eliminar</button>
+        <div th:if="${#lists.isEmpty(usuarios)}" class="card panel">
+            <p>No se encontraron usuarios.</p>
+        </div>
+
+        <div class="facv-table-wrapper" th:unless="${#lists.isEmpty(usuarios)}">
+            <table class="facv-table">
+                <thead>
+                    <tr>
+                        <th>Licencia</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Localidad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="u : ${usuarios}">
+                        <td data-label="Licencia" th:text="${u.licencia ?: '—'}">LIC</td>
+                        <td data-label="Nombre" th:text="${u.nombre}">Nombre</td>
+                        <td data-label="Apellidos" th:text="${u.apellidos}">Apellidos</td>
+                        <td data-label="Email" th:text="${u.email}">Email</td>
+                        <td data-label="Rol">
+                            <span class="facv-badge facv-badge-revision" th:text="${u.rol}">ROL</span>
+                        </td>
+                        <td data-label="Localidad" th:text="${u.localidad ?: '—'}">Localidad</td>
+                        <td data-label="Acciones">
+                            <div class="facv-table-actions">
+                                <a class="facv-btn-secondary"
+                                   th:href="@{/admin/usuarios/{lic}/editar(lic=${u.licencia})}">Editar</a>
+                                <form th:action="@{/admin/usuarios/{lic}/eliminar(lic=${u.licencia})}" method="post"
+                                      th:data-nombre="${u.nombre}"
+                                      onsubmit="return confirm('¿Eliminar usuario ' + this.dataset.nombre + '? Esta acción no se puede deshacer.')">
+                                    <button class="facv-btn-danger" type="submit">Eliminar</button>
                                 </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </article>
-        </section>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
+
+    <script th:src="@{/js/facv-toasts.js}"></script>
 </body>
 </html>

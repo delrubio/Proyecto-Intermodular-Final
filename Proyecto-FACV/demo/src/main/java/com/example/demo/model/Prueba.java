@@ -60,6 +60,9 @@ public class Prueba {
     @EqualsAndHashCode.Exclude
     private Organizador organizador;
 
+    @Column(name = "imagen_filename")
+    private String imagenFilename;
+
     @Column(name = "n_inscritos", nullable = false)
     private Integer nInscritos = 0;
 

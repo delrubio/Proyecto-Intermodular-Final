@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${pageTitle}">Pruebas</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -10,53 +11,75 @@
 
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">Pruebas</p>
-            <h1>Listado de pruebas</h1>
-            <p>Lista de pruebas disponibles en el sistema.</p>
-            <div th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}">
-                <a class="nav-link" th:href="@{/nueva-prueba}">Añadir prueba</a>
+            <div class="hero-text">
+                <p class="eyebrow">Pruebas</p>
+                <h1>Listado de pruebas</h1>
+                <p>Lista de pruebas disponibles en el sistema.</p>
+            </div>
+            <div class="hero-actions" th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}">
+                <a class="facv-btn-primary" th:href="@{/nueva-prueba}">+ Añadir prueba</a>
             </div>
         </section>
 
-        <section class="page-section">
-            <form method="post" th:action="@{/findByTitle}" th:object="${searchForm}">
-                Buscar por nombre:
-                <div class="field">
-                    <input type="text" name="nombre" th:value="${searchForm?.nombre}" placeholder="Ingrese nombre de la prueba" />
-                    <input type="submit" value="Buscar" />
+        <form method="post" th:action="@{/findByTitle}" th:object="${searchForm}">
+            <div class="facv-search-bar">
+                <div class="facv-search-input-group">
+                    <label class="facv-search-label">Buscar por nombre</label>
+                    <input type="text" class="facv-input" name="nombre"
+                           th:value="${searchForm?.nombre}" placeholder="Nombre de la prueba...">
                 </div>
-            </form>
-        </section>
+                <div class="facv-search-actions">
+                    <button type="submit" class="facv-btn-primary">Buscar</button>
+                    <a class="facv-btn-neutral" th:href="@{/pruebas}">Limpiar</a>
+                </div>
+            </div>
+        </form>
 
-        <section class="page-section">
-            <div class="auth-message" th:if="${successMessage}" th:text="${successMessage}"></div>
-            <div class="content-grid pruebas-grid">
-                <div th:if="${#lists.isEmpty(pruebas)}">
-                    <p>No hay pruebas aún.</p>
-                </div>
-                <div th:each="p : ${pruebas}">
-                    <article class="card panel">
-                        <div>
-                            <div>
-                                <h3 th:text="${p.nombre}">Nombre</h3>
-                                <p><strong>Fecha:</strong> <span th:text="${p.fecha}">2026-01-01</span></p>
-                                <p><strong>Localidad:</strong> <span th:text="${p.localidad}">Localidad</span></p>
-                                <p><strong>Campeonato:</strong> <span th:text="${p.campeonato}">Campeonato</span></p>
-                                <p><strong>Organizador:</strong> <span th:text="${p.organizador?.nombre}">Organizador</span></p>
-                                <p><strong>Inscritos:</strong> <span th:text="${p.nInscritos}">0</span></p>
-                                <div th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}"
-                                     style="display:flex; gap:0.5rem; margin-top:0.8rem; flex-wrap:wrap;">
-                                    <a class="nav-link" th:href="@{/pruebas/{id}/editar(id=${p.idPrueba})}">Editar</a>
-                                    <form th:action="@{/pruebas/{id}/eliminar(id=${p.idPrueba})}" method="post" style="margin:0;">
-                                        <button class="logout-button" type="submit">Eliminar</button>
-                                    </form>
-                                </div>
+        <div th:if="${#lists.isEmpty(pruebas)}" class="card panel">
+            <p>No hay pruebas aún.</p>
+        </div>
+
+        <div class="facv-table-wrapper" th:unless="${#lists.isEmpty(pruebas)}">
+            <table class="facv-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Localidad</th>
+                        <th>Campeonato</th>
+                        <th>Organizador</th>
+                        <th>Inscritos</th>
+                        <th th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${pruebas}">
+                        <td class="facv-prueba-thumb-cell">
+                            <img th:if="${p.imagenFilename != null}"
+                                 th:src="@{/pruebas/imagen/{id}(id=${p.idPrueba})}"
+                                 class="facv-prueba-thumb" alt="">
+                        </td>
+                        <td data-label="Nombre" th:text="${p.nombre}">Nombre</td>
+                        <td data-label="Fecha" th:text="${p.fecha}">Fecha</td>
+                        <td data-label="Localidad" th:text="${p.localidad}">Localidad</td>
+                        <td data-label="Campeonato" th:text="${p.campeonato}">Campeonato</td>
+                        <td data-label="Organizador" th:text="${p.organizador?.nombre ?: '—'}">Organizador</td>
+                        <td data-label="Inscritos" th:text="${p.nInscritos}">0</td>
+                        <td data-label="Acciones" th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}">
+                            <div class="facv-table-actions">
+                                <a class="facv-btn-secondary" th:href="@{/pruebas/{id}/editar(id=${p.idPrueba})}">Editar</a>
+                                <form th:action="@{/pruebas/{id}/eliminar(id=${p.idPrueba})}" method="post">
+                                    <button class="facv-btn-danger" type="submit">Eliminar</button>
+                                </form>
                             </div>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
+
+    <script th:src="@{/js/facv-toasts.js}"></script>
 </body>
 </html>

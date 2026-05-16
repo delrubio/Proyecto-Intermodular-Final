@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Seleccionar Prueba</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -10,31 +11,33 @@
 
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">Verificaciones · Paso 1 de 2</p>
-            <h1>Selecciona la prueba</h1>
-            <p>Elige la prueba cuyos vehículos deseas verificar.</p>
+            <div class="hero-text">
+                <p class="eyebrow">Verificaciones · Paso 1 de 2</p>
+                <h1>Selecciona la prueba</h1>
+                <p>Elige la prueba cuyos vehículos deseas verificar.</p>
+            </div>
         </section>
 
-        <section class="page-section">
-            <article class="card panel">
-                <form th:action="@{/verificaciones/seleccionar-prueba}" method="post">
-                    <div class="field">
-                        <label for="pruebaId">Prueba</label>
-                        <select id="pruebaId" name="pruebaId" required>
-                            <option value="">-- Selecciona una prueba --</option>
-                            <option th:each="p : ${pruebas}"
-                                    th:value="${p.idPrueba}"
-                                    th:text="${p.nombre + ' — ' + #temporals.format(p.fecha, 'dd/MM/yyyy') + ' (' + (p.localidad ?: '') + ')'}">
-                            </option>
-                        </select>
-                    </div>
-                    <div style="margin-top:1rem;">
-                        <button class="login-button" type="submit">Ver vehículos pendientes →</button>
-                        <a class="nav-link" th:href="@{/verificaciones}" style="margin-left:0.8rem;">Cancelar</a>
-                    </div>
-                </form>
-            </article>
-        </section>
+        <div class="card panel" style="max-width:560px;">
+            <form th:action="@{/verificaciones/seleccionar-prueba}" method="post">
+                <div class="field">
+                    <label for="pruebaId">Prueba *</label>
+                    <select id="pruebaId" name="pruebaId" required>
+                        <option value="">— Selecciona una prueba —</option>
+                        <option th:each="p : ${pruebas}"
+                                th:value="${p.idPrueba}"
+                                th:text="${p.nombre + ' — ' + #temporals.format(p.fecha, 'dd/MM/yyyy') + ' (' + (p.localidad ?: '') + ')'}">
+                        </option>
+                    </select>
+                </div>
+                <div class="facv-form-actions">
+                    <button class="facv-btn-primary" type="submit">Ver vehículos pendientes →</button>
+                    <a class="facv-btn-neutral" th:href="@{/verificaciones}">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </main>
+
+    <script th:src="@{/js/facv-toasts.js}"></script>
 </body>
 </html>

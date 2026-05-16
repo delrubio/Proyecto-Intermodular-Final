@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${formTitle}">Editar incidencia</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
@@ -10,48 +11,49 @@
 
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">Incidencias</p>
-            <h1 th:text="${formTitle}">Editar incidencia</h1>
+            <div class="hero-text">
+                <p class="eyebrow">Incidencias</p>
+                <h1 th:text="${formTitle}">Editar incidencia</h1>
+            </div>
         </section>
 
-        <section class="page-section">
-            <article class="card panel">
-                <!-- Información de solo lectura -->
-                <div style="margin-bottom:1rem; padding:0.8rem; background:rgba(255,255,255,0.05); border-radius:6px;">
-                    <p><strong>Vehículo:</strong>
-                        <span th:text="${incidencia.vehiculo.marca + ' ' + incidencia.vehiculo.modelo + ' (' + incidencia.vehiculo.matricula + ')'}"></span>
-                    </p>
-                    <p><strong>Técnico:</strong>
-                        <span th:text="${incidencia.tecnico1.nombre + ' ' + incidencia.tecnico1.apellidos}"></span>
-                    </p>
-                    <p><strong>Fecha:</strong>
-                        <span th:text="${#temporals.format(incidencia.fecha, 'dd/MM/yyyy')}"></span>
-                    </p>
+        <div class="card panel" style="max-width:680px;">
+            <div class="facv-info-box">
+                <p><strong>Vehículo:</strong>
+                    <span th:text="${incidencia.vehiculo.marca + ' ' + incidencia.vehiculo.modelo + ' (' + incidencia.vehiculo.matricula + ')'}"></span>
+                </p>
+                <p><strong>Técnico:</strong>
+                    <span th:text="${incidencia.tecnico1.nombre + ' ' + incidencia.tecnico1.apellidos}"></span>
+                </p>
+                <p><strong>Fecha:</strong>
+                    <span th:text="${#temporals.format(incidencia.fecha, 'dd/MM/yyyy')}"></span>
+                </p>
+            </div>
+
+            <form th:action="${formAction}" method="post">
+                <div class="field">
+                    <label for="descripcionIncidencia">Descripción *</label>
+                    <textarea id="descripcionIncidencia" name="descripcionIncidencia" rows="4" required
+                              th:placeholder ="${incidencia.descripcionIncidencia}"></textarea>
                 </div>
 
-                <form th:action="${formAction}" method="post">
-                    <div class="field">
-                        <label for="descripcionIncidencia">Descripción *</label>
-                        <textarea id="descripcionIncidencia" name="descripcionIncidencia" rows="4" required
-                                  th:text="${incidencia.descripcionIncidencia}"></textarea>
-                    </div>
+                <div class="field">
+                    <label for="estado">Estado *</label>
+                    <select id="estado" name="estado" required>
+                        <option value="ABIERTA"     th:selected="${incidencia.estado != null and incidencia.estado.name() == 'ABIERTA'}">ABIERTA</option>
+                        <option value="EN_REVISION"  th:selected="${incidencia.estado != null and incidencia.estado.name() == 'EN_REVISION'}">EN_REVISION</option>
+                        <option value="RESUELTA"    th:selected="${incidencia.estado != null and incidencia.estado.name() == 'RESUELTA'}">RESUELTA</option>
+                    </select>
+                </div>
 
-                    <div class="field">
-                        <label for="estado">Estado *</label>
-                        <select id="estado" name="estado" required>
-                            <option value="ABIERTA">ABIERTA</option>
-                            <option value="EN_REVISION">EN_REVISION</option>
-                            <option value="RESUELTA">RESUELTA</option>
-                        </select>
-                    </div>
-
-                    <div style="margin-top:1rem">
-                        <button class="login-button" type="submit" th:text="${submitLabel}">Guardar cambios</button>
-                        <a class="nav-link" th:href="@{/incidencias}" style="margin-left:0.8rem;">Cancelar</a>
-                    </div>
-                </form>
-            </article>
-        </section>
+                <div class="facv-form-actions">
+                    <button class="facv-btn-primary" type="submit" th:text="${submitLabel}">Guardar cambios</button>
+                    <a class="facv-btn-neutral" th:href="@{/incidencias}">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </main>
+
+    <script th:src="@{/js/facv-toasts.js}"></script>
 </body>
 </html>

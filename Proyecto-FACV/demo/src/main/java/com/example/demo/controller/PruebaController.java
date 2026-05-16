@@ -1,5 +1,11 @@
 package com.example.demo.controller;
 
+import java.nio.file.Files;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.enums.RolUsuario;
@@ -17,6 +25,7 @@ import com.example.demo.model.Prueba;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.OrganizadorRepository;
 import com.example.demo.repository.UsuarioRepository;
+import com.example.demo.service.FileStorageService;
 import com.example.demo.service.PruebaService;
 
 import jakarta.validation.Valid;
@@ -26,17 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class PruebaController {
 
-    private final PruebaService pruebaService;
-    private final UsuarioRepository usuarioRepository;
-    private final OrganizadorRepository organizadorRepository;
-
-    public PruebaController(PruebaService pruebaService,
-                            UsuarioRepository usuarioRepository,
-                            OrganizadorRepository organizadorRepository) {
-        this.pruebaService = pruebaService;
-        this.usuarioRepository = usuarioRepository;
-        this.organizadorRepository = organizadorRepository;
-    }
+    @Autowired PruebaService pruebaService;
+    @Autowired UsuarioRepository usuarioRepository;
+    @Autowired OrganizadorRepository organizadorRepository;
+    @Autowired FileStorageService fileStorageService;
 
     @GetMapping("/pruebas")
     public String pruebasView(Model model) {
@@ -59,6 +61,7 @@ public class PruebaController {
             @Valid @ModelAttribute("prueba") Prueba prueba,
             BindingResult bindingResult,
             @RequestParam(required = false) String organizadorLicencia,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             RedirectAttributes redirectAttributes,
             Model model,
             Authentication authentication) {
@@ -73,6 +76,13 @@ public class PruebaController {
             prueba.setOrganizador((Organizador) usuario);
         } else if (organizadorLicencia != null && !organizadorLicencia.isBlank()) {
             organizadorRepository.findById(organizadorLicencia).ifPresent(prueba::setOrganizador);
+        }
+        if (file != null && !file.isEmpty()) {
+            try {
+                prueba.setImagenFilename(fileStorageService.store(file));
+            } catch (RuntimeException ex) {
+                log.warn("PruebaController - No se pudo guardar la imagen: {}", ex.getMessage());
+            }
         }
         try {
             pruebaService.save(prueba);
@@ -100,6 +110,7 @@ public class PruebaController {
             @Valid @ModelAttribute("prueba") Prueba prueba,
             BindingResult bindingResult,
             @RequestParam(required = false) String organizadorLicencia,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             RedirectAttributes redirectAttributes,
             Model model) {
         Prueba existente = pruebaService.findById(id);
@@ -116,6 +127,19 @@ public class PruebaController {
         } else {
             prueba.setOrganizador(existente.getOrganizador());
         }
+        if (file != null && !file.isEmpty()) {
+            try {
+                prueba.setImagenFilename(fileStorageService.store(file));
+                if (existente.getImagenFilename() != null) {
+                    try { fileStorageService.delete(existente.getImagenFilename()); } catch (RuntimeException ignored) {}
+                }
+            } catch (RuntimeException ex) {
+                log.warn("PruebaController - No se pudo guardar la imagen: {}", ex.getMessage());
+                prueba.setImagenFilename(existente.getImagenFilename());
+            }
+        } else {
+            prueba.setImagenFilename(existente.getImagenFilename());
+        }
         try {
             pruebaService.save(prueba);
             redirectAttributes.addFlashAttribute("successMessage", "Prueba actualizada correctamente");
@@ -124,6 +148,24 @@ public class PruebaController {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al editar prueba: " + ex.getMessage());
         }
         return "redirect:/pruebas";
+    }
+
+    @GetMapping("/pruebas/imagen/{id}")
+    @ResponseBody
+    public ResponseEntity<Resource> getPruebaImagen(@PathVariable Integer id) {
+        Prueba prueba = pruebaService.findById(id);
+        if (prueba == null || prueba.getImagenFilename() == null || prueba.getImagenFilename().isBlank()) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            Resource resource = fileStorageService.loadAsResource(prueba.getImagenFilename());
+            MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
+            String contentType = Files.probeContentType(resource.getFile().toPath());
+            if (contentType != null) mediaType = MediaType.parseMediaType(contentType);
+            return ResponseEntity.ok().contentType(mediaType).body(resource);
+        } catch (Exception ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/pruebas/{id}/eliminar")

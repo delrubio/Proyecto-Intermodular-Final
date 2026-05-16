@@ -1,13 +1,16 @@
 package com.example.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.dto.AdminUsuarioForm;
 import com.example.demo.enums.RolUsuario;
 import com.example.demo.model.Administrador;
 import com.example.demo.model.Observador;
@@ -23,11 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class UsuarioController {
 
-    private final UsuarioService usuarioService;
-
-    public UsuarioController(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
+    @Autowired UsuarioService usuarioService;
 
     @GetMapping("/usuarios")
     public String usuariosRedirect() {
@@ -80,30 +79,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/admin/usuarios/nuevo")
-    public String adminNuevoSubmit(
-            @RequestParam String licencia,
-            @RequestParam String nombre,
-            @RequestParam String apellidos,
-            @RequestParam String email,
-            @RequestParam(required = false) String fechaNacimiento,
-            @RequestParam(required = false) String telefono,
-            @RequestParam(required = false) String localidad,
-            @RequestParam String rol,
-            @RequestParam String rawPassword,
-            @RequestParam(required = false) String federacion,
-            @RequestParam(required = false) Boolean presidenteFacv,
-            @RequestParam(required = false) Byte experiencia,
-            @RequestParam(required = false) String club,
-            @RequestParam(required = false) Integer carrerasGanadas,
-            @RequestParam(required = false) Byte nivelTecnico,
-            @RequestParam(required = false) String descripcion,
-            RedirectAttributes redirectAttributes) {
+    public String adminNuevoSubmit(@ModelAttribute AdminUsuarioForm form, RedirectAttributes redirectAttributes) {
         try {
-            RolUsuario rolEnum = RolUsuario.valueOf(rol);
-            usuarioService.crear(licencia, nombre, apellidos, email, fechaNacimiento,
-                    telefono, localidad, rolEnum, rawPassword,
-                    federacion, presidenteFacv, experiencia,
-                    club, carrerasGanadas, nivelTecnico, descripcion);
+            RolUsuario rolEnum = RolUsuario.valueOf(form.getRol());
+            usuarioService.crear(form.getLicencia(), form.getNombre(), form.getApellidos(), form.getEmail(),
+                    form.getFechaNacimiento(), form.getTelefono(), form.getLocalidad(), rolEnum, form.getRawPassword(),
+                    form.getFederacion(), form.getPresidenteFacv(), form.getExperiencia(),
+                    form.getClub(), form.getCarrerasGanadas(), form.getNivelTecnico(), form.getDescripcion());
             redirectAttributes.addFlashAttribute("successMessage", "Usuario creado correctamente");
             return "redirect:/admin/usuarios";
         } catch (Exception ex) {
@@ -135,26 +117,13 @@ public class UsuarioController {
     @PostMapping("/admin/usuarios/{licencia}/editar")
     public String adminEditarSubmit(
             @PathVariable String licencia,
-            @RequestParam String nombre,
-            @RequestParam String apellidos,
-            @RequestParam String email,
-            @RequestParam(required = false) String fechaNacimiento,
-            @RequestParam(required = false) String telefono,
-            @RequestParam(required = false) String localidad,
-            @RequestParam(required = false) String rawPassword,
-            @RequestParam(required = false) String federacion,
-            @RequestParam(required = false) Boolean presidenteFacv,
-            @RequestParam(required = false) Byte experiencia,
-            @RequestParam(required = false) String club,
-            @RequestParam(required = false) Integer carrerasGanadas,
-            @RequestParam(required = false) Byte nivelTecnico,
-            @RequestParam(required = false) String descripcion,
+            @ModelAttribute AdminUsuarioForm form,
             RedirectAttributes redirectAttributes) {
         try {
-            var result = usuarioService.actualizar(licencia, nombre, apellidos, email,
-                    fechaNacimiento, telefono, localidad, rawPassword,
-                    federacion, presidenteFacv, experiencia,
-                    club, carrerasGanadas, nivelTecnico, descripcion);
+            var result = usuarioService.actualizar(licencia, form.getNombre(), form.getApellidos(), form.getEmail(),
+                    form.getFechaNacimiento(), form.getTelefono(), form.getLocalidad(), form.getRawPassword(),
+                    form.getFederacion(), form.getPresidenteFacv(), form.getExperiencia(),
+                    form.getClub(), form.getCarrerasGanadas(), form.getNivelTecnico(), form.getDescripcion());
             if (result == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Usuario no encontrado");
             } else {

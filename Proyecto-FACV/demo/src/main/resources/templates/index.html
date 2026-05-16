@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inicio | FACV</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body class="app-shell">
@@ -10,41 +11,45 @@
 
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">Inicio</p>
-            <h1>Panel principal</h1>
-            <p>Gestión inicial del proyecto de rallye.</p>
+            <div class="hero-text">
+                <p class="eyebrow">Inicio</p>
+                <h1>Panel principal</h1>
+                <p>Federación de Automovilismo de la Comunitat Valenciana — Gestión integral de pruebas y campeonatos.</p>
+            </div>
         </section>
 
-        <section class="home-grid">
-            <article class="card panel">
-                <h2><a th:href="@{/pruebas}" style="text-decoration:none;color:inherit;">Pruebas</a></h2>
+        <div class="home-grid">
+            <article class="card panel card-accent">
+                <h2><a th:href="@{/pruebas}">Pruebas</a></h2>
                 <p>Gestiona las pruebas, sus fechas y la información principal.</p>
             </article>
-            <article class="card panel card-accent">
-                <h2><a th:href="@{/vehiculos}" style="text-decoration:none;color:inherit;">Vehículos</a></h2>
+            <article class="card panel">
+                <h2><a th:href="@{/vehiculos}">Vehículos</a></h2>
                 <p>Consulta y organiza los vehículos vinculados al proyecto.</p>
             </article>
             <article class="card panel">
-                <h2><a th:href="@{/verificaciones}" style="text-decoration:none;color:inherit;">Verificaciones</a></h2>
+                <h2><a th:href="@{/verificaciones}">Verificaciones</a></h2>
                 <p>Controla la parte técnica y su estado de revisión.</p>
             </article>
             <article class="card panel">
-                <h2><a th:href="@{/inscripciones}" style="text-decoration:none;color:inherit;">Inscripciones</a></h2>
+                <h2><a th:href="@{/inscripciones}">Inscripciones</a></h2>
                 <p>Registro de vehículos participantes en cada prueba.</p>
             </article>
             <article class="card panel">
-                <h2><a th:href="@{/incidencias}" style="text-decoration:none;color:inherit;">Incidencias</a></h2>
+                <h2><a th:href="@{/incidencias}">Incidencias</a></h2>
                 <p>Seguimiento de incidencias técnicas detectadas en pruebas.</p>
             </article>
             <article class="card panel">
-                <h2><a th:href="@{/informes}" style="text-decoration:none;color:inherit;">Informes</a></h2>
+                <h2><a th:href="@{/informes}">Informes</a></h2>
                 <p>Documentación técnica generada tras cada prueba.</p>
             </article>
             <article class="card panel">
-                <h2><a th:href="@{/usuarios}" style="text-decoration:none;color:inherit;">Usuarios</a></h2>
+                <h2><a th:href="@{/usuarios}">Usuarios</a></h2>
                 <p>Acceso y administración de usuarios del sistema.</p>
             </article>
-        </section>
+        </div>
     </main>
+
+    <script th:src="@{/js/facv-toasts.js}"></script>
 </body>
 </html>
