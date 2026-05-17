@@ -31,6 +31,21 @@ import com.example.demo.service.PruebaService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controlador MVC para la gestión de pruebas de rally.
+ * <p>
+ * Rutas principales:
+ * <ul>
+ *   <li>{@code GET /pruebas} – listado de todas las pruebas.</li>
+ *   <li>{@code GET/POST /nueva-prueba} – formulario de creación (ADMINISTRADOR, ORGANIZADOR).</li>
+ *   <li>{@code GET/POST /pruebas/{id}/editar} – formulario de edición (ADMINISTRADOR, ORGANIZADOR).</li>
+ *   <li>{@code POST /pruebas/{id}/eliminar} – eliminación (ADMINISTRADOR, ORGANIZADOR).</li>
+ *   <li>{@code GET /pruebas/imagen/{id}} – devuelve la imagen de cabecera como recurso HTTP.</li>
+ * </ul>
+ * Soporta subida de imagen mediante {@code multipart/form-data} delegando en
+ * {@link com.example.demo.service.FileStorageService}.
+ * </p>
+ */
 @Slf4j
 @Controller
 public class PruebaController {
@@ -57,14 +72,8 @@ public class PruebaController {
     }
 
     @PostMapping("/nueva-prueba")
-    public String nuevaPruebaSubmit(
-            @Valid @ModelAttribute("prueba") Prueba prueba,
-            BindingResult bindingResult,
-            @RequestParam(required = false) String organizadorLicencia,
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            RedirectAttributes redirectAttributes,
-            Model model,
-            Authentication authentication) {
+    public String nuevaPruebaSubmit(@Valid @ModelAttribute("prueba") Prueba prueba, BindingResult bindingResult, @RequestParam(required = false) String organizadorLicencia, 
+                                    @RequestParam(value = "file", required = false) MultipartFile file, RedirectAttributes redirectAttributes, Model model, Authentication authentication) {
         if (bindingResult.hasErrors()) {
             modelNewForm(model);
             model.addAttribute("organizadores", organizadorRepository.findAll());
@@ -72,6 +81,7 @@ public class PruebaController {
         }
         prueba.setNInscritos(0);
         Usuario usuario = usuarioRepository.findByNombre(authentication.getName());
+        
         if (usuario != null && usuario.getRol() == RolUsuario.ORGANIZADOR) {
             prueba.setOrganizador((Organizador) usuario);
         } else if (organizadorLicencia != null && !organizadorLicencia.isBlank()) {
@@ -105,14 +115,7 @@ public class PruebaController {
     }
 
     @PostMapping("/pruebas/{id}/editar")
-    public String editarPruebaSubmit(
-            @PathVariable Integer id,
-            @Valid @ModelAttribute("prueba") Prueba prueba,
-            BindingResult bindingResult,
-            @RequestParam(required = false) String organizadorLicencia,
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+    public String editarPruebaSubmit(@PathVariable Integer id, @Valid @ModelAttribute("prueba") Prueba prueba, BindingResult bindingResult, @RequestParam(required = false) String organizadorLicencia, @RequestParam(value = "file", required = false) MultipartFile file, RedirectAttributes redirectAttributes, Model model) {
         Prueba existente = pruebaService.findById(id);
         if (existente == null) return "redirect:/pruebas";
         if (bindingResult.hasErrors()) {
@@ -120,8 +123,10 @@ public class PruebaController {
             model.addAttribute("organizadores", organizadorRepository.findAll());
             return "nueva-prueba";
         }
+        
         prueba.setIdPrueba(id);
         prueba.setNInscritos(existente.getNInscritos());
+        
         if (organizadorLicencia != null && !organizadorLicencia.isBlank()) {
             organizadorRepository.findById(organizadorLicencia).ifPresent(prueba::setOrganizador);
         } else {
@@ -176,9 +181,7 @@ public class PruebaController {
     }
 
     @PostMapping("/findByTitle")
-    public String findByTitleSubmit(@ModelAttribute("searchForm") Prueba searchForm,
-                                    @RequestParam(required = false) String nombre,
-                                    Model model) {
+    public String findByTitleSubmit(@ModelAttribute("searchForm") Prueba searchForm, @RequestParam(required = false) String nombre, Model model) {
         model.addAttribute("pruebas", pruebaService.searchByNombre(nombre));
         model.addAttribute("searchForm", searchForm);
         model.addAttribute("organizadores", organizadorRepository.findAll());

@@ -18,6 +18,16 @@ import com.example.demo.repository.UsuarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio de negocio para la gestión de usuarios.
+ * <p>
+ * Centraliza la creación, actualización, búsqueda y eliminación de usuarios de todos los roles.
+ * La construcción de la instancia concreta (subclase) se delega en {@link #construirSubtipo},
+ * y los campos específicos de cada rol se asignan en {@link #rellenarCamposEspecificos}.
+ * Las contraseñas se codifican con {@link org.springframework.security.crypto.password.PasswordEncoder}
+ * (BCrypt) antes de persistirse.
+ * </p>
+ */
 @Slf4j
 @Service
 public class UsuarioService {
@@ -25,11 +35,18 @@ public class UsuarioService {
     @Autowired UsuarioRepository usuarioRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
+    /** Devuelve todos los usuarios del sistema sin filtrar. */
     public List<Usuario> findAll() {
         log.info("UsuarioService - Obteniendo listado de todos los usuarios");
         return usuarioRepository.findAll();
     }
 
+    /**
+     * Busca un usuario por su licencia (clave primaria).
+     *
+     * @param licencia identificador único
+     * @return el usuario encontrado o {@code null} si no existe
+     */
     public Usuario findById(String licencia) {
         log.info("UsuarioService - Buscando usuario con licencia: {}", licencia);
         return usuarioRepository.findById(licencia).orElse(null);
@@ -39,6 +56,15 @@ public class UsuarioService {
         return usuarioRepository.findByRol(rol);
     }
 
+    /**
+     * Crea y persiste un nuevo usuario con el rol indicado.
+     * <p>
+     * Instancia la subclase correspondiente, codifica la contraseña y rellena
+     * los campos específicos del rol antes de llamar al repositorio.
+     * </p>
+     *
+     * @return el usuario persistido
+     */
     @Transactional
     public Usuario crear(String licencia, String nombre, String apellidos, String email,
                          String fechaNacimientoStr, String telefono, String localidad,
@@ -67,6 +93,15 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    /**
+     * Actualiza los datos de un usuario existente.
+     * <p>
+     * Si {@code rawPassword} está vacío no se modifica la contraseña actual.
+     * No permite cambiar la licencia ni el rol.
+     * </p>
+     *
+     * @return el usuario actualizado o {@code null} si no existe
+     */
     @Transactional
     public Usuario actualizar(String licencia, String nombre, String apellidos, String email,
                               String fechaNacimientoStr, String telefono, String localidad,

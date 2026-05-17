@@ -20,6 +20,25 @@ import com.example.demo.repository.VehiculoRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Inicializador de datos de prueba para arranque en entorno de desarrollo.
+ * <p>
+ * Implementa {@link org.springframework.boot.CommandLineRunner} a través de un bean
+ * {@code @Bean} que se ejecuta al inicio de la aplicación. Si ya hay usuarios en la base
+ * de datos, la semilla se omite para no duplicar registros en reinicios.
+ * </p>
+ * <p>
+ * Crea los siguientes usuarios con contraseña {@code 1234} (codificada con BCrypt):
+ * <ul>
+ *   <li>Ignacio (ADMINISTRADOR) – licencia {@code LIC-ADMIN-001}</li>
+ *   <li>Carlos (ORGANIZADOR) – licencia {@code LIC-ORG-001}</li>
+ *   <li>Miguel (PILOTO) – licencia {@code LIC-PIL-001}</li>
+ *   <li>Ana (TECNICO) – licencia {@code LIC-TEC-001}</li>
+ *   <li>Luis (OBSERVADOR) – licencia {@code LIC-OBS-001}</li>
+ * </ul>
+ * También crea dos pruebas y dos vehículos de ejemplo.
+ * </p>
+ */
 @Slf4j
 @Configuration
 public class DataInitializer {

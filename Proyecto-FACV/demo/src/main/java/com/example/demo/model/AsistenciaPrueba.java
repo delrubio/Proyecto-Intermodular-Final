@@ -20,6 +20,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Entidad que registra la asistencia de un {@link Usuario} a una {@link Prueba}.
+ * <p>
+ * Usa clave primaria compuesta {@link AsistenciaPruebaId} con {@code @EmbeddedId} y
+ * {@code @MapsId} para enlazar los campos de la clave con las asociaciones JPA.
+ * </p>
+ */
 @Entity
 @Table(name = "asistencia_prueba")
 @Getter

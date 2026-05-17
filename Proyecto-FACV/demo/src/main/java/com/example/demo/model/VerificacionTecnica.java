@@ -29,6 +29,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Entidad que representa la verificación técnica de un {@link Vehiculo} para una {@link Prueba}.
+ * <p>
+ * Requiere al menos un técnico ({@code tecnico1}); el segundo ({@code tecnico2}) es opcional.
+ * Si el resultado es {@link com.example.demo.enums.ResultadoVerificacion#NO_APTO},
+ * {@link com.example.demo.service.VerificacionService} genera automáticamente una
+ * {@link Incidencia} en estado {@code ABIERTA} y actualiza el campo {@code apto}
+ * de la {@link InscripcionPrueba} correspondiente.
+ * </p>
+ */
 @Entity
 @Table(name = "verificacion_tecnica")
 @Getter
@@ -43,31 +53,27 @@ public class VerificacionTecnica {
 
     @NotNull(message = "El vehículo es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "matricula", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_verif_vehiculo"))
+    @JoinColumn(name = "matricula", nullable = false, foreignKey = @ForeignKey(name = "fk_verif_vehiculo"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Vehiculo vehiculo;
 
     @NotNull(message = "El técnico principal es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tecnico1_licencia", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_verif_tecnico1"))
+    @JoinColumn(name = "tecnico1_licencia", nullable = false, foreignKey = @ForeignKey(name = "fk_verif_tecnico1"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Tecnico tecnico1;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tecnico2_licencia",
-                foreignKey = @ForeignKey(name = "fk_verif_tecnico2"))
+    @JoinColumn(name = "tecnico2_licencia", foreignKey = @ForeignKey(name = "fk_verif_tecnico2"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Tecnico tecnico2;
 
     @NotNull(message = "La prueba es obligatoria")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_prueba", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_verif_prueba"))
+    @JoinColumn(name = "id_prueba", nullable = false, foreignKey = @ForeignKey(name = "fk_verif_prueba"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Prueba prueba;

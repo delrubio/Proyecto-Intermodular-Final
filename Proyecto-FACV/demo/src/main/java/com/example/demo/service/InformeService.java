@@ -20,6 +20,14 @@ import com.example.demo.repository.UsuarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio de negocio para la gestión de informes de observación.
+ * <p>
+ * Al crear un informe, el observador se obtiene del contexto de seguridad si el usuario
+ * autenticado tiene rol {@code OBSERVADOR}. El administrador no puede crear informes
+ * directamente (lanza excepción).
+ * </p>
+ */
 @Slf4j
 @Service
 public class InformeService {
@@ -39,8 +47,7 @@ public class InformeService {
 
     public Informe save(Integer pruebaId, String contenido, LocalDate fecha, BigDecimal puntuacion) {
         Observador observador = obtenerObservadorAutenticado();
-        Prueba prueba = pruebaRepository.findById(pruebaId)
-                .orElseThrow(() -> new IllegalArgumentException("Prueba no encontrada"));
+        Prueba prueba = pruebaRepository.findById(pruebaId).orElseThrow(() -> new IllegalArgumentException("Prueba no encontrada"));
 
         Informe informe = new Informe();
         informe.setObservador(observador);

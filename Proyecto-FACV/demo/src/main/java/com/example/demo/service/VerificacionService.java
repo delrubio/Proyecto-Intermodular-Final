@@ -30,6 +30,16 @@ import com.example.demo.repository.VerificacionTecnicaRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio de negocio para la gestión de verificaciones técnicas.
+ * <p>
+ * Cuando se crea una verificación con resultado {@code NO_APTO}, este servicio genera
+ * automáticamente una {@link com.example.demo.model.Incidencia} en estado {@code ABIERTA}
+ * y actualiza el campo {@code apto} de la {@link com.example.demo.model.InscripcionPrueba}
+ * correspondiente. Al actualizar una verificación, sincroniza igualmente el estado de
+ * la inscripción.
+ * </p>
+ */
 @Slf4j
 @Service
 public class VerificacionService {
@@ -105,16 +115,12 @@ public class VerificacionService {
     }
 
     @Transactional
-    public VerificacionTecnica update(Integer id, String matricula, Integer pruebaId,
-                                      String resultado, LocalDate fecha, String tecnico2Licencia,
-                                      String tecnico1Licencia) {
+    public VerificacionTecnica update(Integer id, String matricula, Integer pruebaId,String resultado, LocalDate fecha, String tecnico2Licencia,String tecnico1Licencia) {
         VerificacionTecnica existente = verificacionRepo.findById(id).orElse(null);
         if (existente == null) return null;
 
-        Vehiculo vehiculo = vehiculoRepo.findById(matricula)
-                .orElseThrow(() -> new IllegalArgumentException("Vehículo no encontrado"));
-        Prueba prueba = pruebaRepo.findById(pruebaId)
-                .orElseThrow(() -> new IllegalArgumentException("Prueba no encontrada"));
+        Vehiculo vehiculo = vehiculoRepo.findById(matricula).orElseThrow(() -> new IllegalArgumentException("Vehículo no encontrado"));
+        Prueba prueba = pruebaRepo.findById(pruebaId).orElseThrow(() -> new IllegalArgumentException("Prueba no encontrada"));
 
         existente.setVehiculo(vehiculo);
         existente.setPrueba(prueba);

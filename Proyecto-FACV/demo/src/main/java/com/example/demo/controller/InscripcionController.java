@@ -14,6 +14,19 @@ import com.example.demo.service.InscripcionService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controlador MVC para la gestión de inscripciones de vehículos en pruebas.
+ * <p>
+ * Rutas principales:
+ * <ul>
+ *   <li>{@code GET /inscripciones} – listado (ADMINISTRADOR ve todas; PILOTO solo las suyas).</li>
+ *   <li>{@code GET /nueva-inscripcion} – formulario de alta (ADMINISTRADOR, PILOTO).</li>
+ *   <li>{@code POST /nueva-inscripcion} – crear inscripción.</li>
+ *   <li>{@code POST /inscripciones/eliminar} – cancelar inscripción.</li>
+ * </ul>
+ * Los formularios POST usan {@link com.example.demo.dto.InscripcionForm} como DTO.
+ * </p>
+ */
 @Slf4j
 @Controller
 public class InscripcionController {

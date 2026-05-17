@@ -17,6 +17,16 @@ import com.example.demo.repository.VerificacionTecnicaRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio de negocio para la gestión de incidencias técnicas.
+ * <p>
+ * Gestiona el ciclo de vida de las incidencias. Cuando una incidencia se actualiza
+ * con estado {@link com.example.demo.enums.Estado#RESUELTA}, este servicio la convierte
+ * a {@code OCULTA} y dispara la actualización del resultado de la verificación técnica
+ * asociada a {@code APTO} mediante
+ * {@link com.example.demo.repository.VerificacionTecnicaRepository#cambiarResultadoVerificacionIncidencia}.
+ * </p>
+ */
 @Slf4j
 @Service
 public class IncidenciaService {

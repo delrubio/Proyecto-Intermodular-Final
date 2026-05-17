@@ -17,6 +17,14 @@ import com.example.demo.repository.VehiculoRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio de negocio para la gestión de vehículos de competición.
+ * <p>
+ * Al crear un vehículo, si no se proporciona explícitamente el piloto propietario,
+ * se obtiene el piloto autenticado en el contexto de seguridad actual
+ * ({@link #obtenerPilotoAutenticado}).
+ * </p>
+ */
 @Slf4j
 @Service
 public class VehiculoService {

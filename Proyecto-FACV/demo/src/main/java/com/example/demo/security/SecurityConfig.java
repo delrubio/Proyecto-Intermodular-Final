@@ -11,6 +11,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuración de seguridad de la aplicación basada en Spring Security.
+ * <p>
+ * Define:
+ * <ul>
+ *   <li>El {@link org.springframework.security.crypto.password.PasswordEncoder} BCrypt como bean.</li>
+ *   <li>El {@link org.springframework.security.web.SecurityFilterChain} con las reglas de acceso
+ *       por rol para cada recurso HTTP.</li>
+ *   <li>El formulario de login en {@code /login} y el logout redirigiendo a {@code /login?logout}.</li>
+ *   <li>Exención de CSRF para la consola H2 ({@code /h2-console/**}).</li>
+ *   <li>HTTP Basic como mecanismo alternativo de autenticación.</li>
+ * </ul>
+ * {@code @EnableMethodSecurity} permite usar {@code @PreAuthorize} a nivel de método
+ * si fuera necesario en el futuro.
+ * </p>
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -28,8 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/pruebas/*/imagen").permitAll()
 
-                // Consola H2 + panel admin: solo ADMINISTRADOR
-                .requestMatchers("/h2-console/**").hasRole("ADMINISTRADOR")
+                // Consola + panel admin: solo ADMINISTRADOR
                 .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
                 .requestMatchers("/usuarios", "/findByName").hasRole("ADMINISTRADOR")
 
@@ -69,15 +84,8 @@ public class SecurityConfig {
                 .requestMatchers("/informes/*/eliminar").hasAnyRole("ADMINISTRADOR", "OBSERVADOR")
 
                 // Resto: cualquier usuario autenticado
-                .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/", true)
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll())
+                .anyRequest().authenticated()).formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/", true).permitAll())
+                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .httpBasic(Customizer.withDefaults());

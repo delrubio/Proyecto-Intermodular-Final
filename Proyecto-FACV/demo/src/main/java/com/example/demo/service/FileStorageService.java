@@ -14,6 +14,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio para el almacenamiento de ficheros subidos por formulario.
+ * <p>
+ * Los ficheros se guardan en el directorio {@code uploadDir} relativo al directorio de trabajo
+ * de la aplicación. El nombre definitivo se genera a partir del timestamp del sistema para
+ * evitar colisiones entre subidas concurrentes. En entornos Docker el directorio
+ * se monta como volumen para persistencia entre reinicios del contenedor.
+ * </p>
+ */
 @Slf4j
 @Service
 public class FileStorageService{

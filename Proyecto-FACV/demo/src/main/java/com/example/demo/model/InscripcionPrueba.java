@@ -15,6 +15,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Entidad de unión entre {@link Vehiculo} y {@link Prueba} que representa la inscripción
+ * de un vehículo en una prueba de rally.
+ * <p>
+ * Usa clave primaria compuesta {@link InscripcionPruebaId} con {@code @EmbeddedId} y
+ * {@code @MapsId} para enlazar los campos de la clave con las asociaciones JPA.
+ * Los campos {@code verificado} y {@code apto} son actualizados por
+ * {@link com.example.demo.service.VerificacionService} al procesar la verificación técnica.
+ * </p>
+ */
 @Entity
 @Table(name = "inscripcion_prueba")
 @Getter

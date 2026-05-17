@@ -18,6 +18,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Subclase de {@link Usuario} con rol {@code ORGANIZADOR}.
+ * <p>
+ * Mapeada a la tabla {@code organizador} mediante herencia JOINED. Un organizador
+ * pertenece a un club y es responsable de crear y gestionar {@link Prueba}s.
+ * </p>
+ */
 @Entity
 @Table(name = "organizador")
 @PrimaryKeyJoinColumn(name = "licencia")

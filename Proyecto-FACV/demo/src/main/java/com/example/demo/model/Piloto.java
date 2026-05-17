@@ -17,6 +17,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Subclase de {@link Usuario} con rol {@code PILOTO}.
+ * <p>
+ * Mapeada a la tabla {@code piloto} mediante herencia JOINED. Un piloto puede poseer
+ * varios {@link Vehiculo}s (relación {@code OneToMany}) e inscribirlos en pruebas.
+ * </p>
+ */
 @Entity
 @Table(name = "piloto")
 @PrimaryKeyJoinColumn(name = "licencia")

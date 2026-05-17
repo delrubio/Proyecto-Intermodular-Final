@@ -23,6 +23,14 @@ import com.example.demo.repository.VehiculoRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio de negocio para la gestión de inscripciones de vehículos en pruebas.
+ * <p>
+ * Al inscribir un vehículo, incrementa el contador {@code nInscritos} de la prueba
+ * mediante JPQL atómico. Al cancelar la inscripción, lo decrementa.
+ * Los pilotos solo ven sus propios vehículos; el administrador ve todos.
+ * </p>
+ */
 @Slf4j
 @Service
 public class InscripcionService {

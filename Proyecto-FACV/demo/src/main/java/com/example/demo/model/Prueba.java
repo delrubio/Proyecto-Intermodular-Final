@@ -26,6 +26,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Entidad que representa una prueba (evento) de rally organizada bajo la FACV.
+ * <p>
+ * Cada prueba está vinculada a un {@link Organizador} y puede tener una imagen de
+ * cabecera almacenada en el sistema de ficheros local ({@code imagenFilename}).
+ * El campo {@code nInscritos} se actualiza mediante JPQL atómico en
+ * {@link com.example.demo.repository.PruebaRepository} para evitar condiciones de carrera.
+ * </p>
+ */
 @Entity
 @Table(name = "pruebas")
 @Getter
@@ -54,8 +63,7 @@ public class Prueba {
     private String campeonato;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organizador_licencia", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_prueba_organizador"))
+    @JoinColumn(name = "organizador_licencia", nullable = false, foreignKey = @ForeignKey(name = "fk_prueba_organizador"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Organizador organizador;

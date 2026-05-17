@@ -16,6 +16,18 @@ import com.example.demo.service.IncidenciaService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controlador MVC para la gestión de incidencias técnicas.
+ * <p>
+ * Rutas principales:
+ * <ul>
+ *   <li>{@code GET /incidencias} – listado; acepta {@code ?matricula=} para filtrar por vehículo.</li>
+ *   <li>{@code GET/POST /incidencias/{id}/editar} – editar estado y descripción (ADMINISTRADOR, TECNICO).</li>
+ *   <li>{@code POST /incidencias/{id}/eliminar} – eliminar incidencia (ADMINISTRADOR, TECNICO).</li>
+ * </ul>
+ * Los formularios de edición usan {@link com.example.demo.dto.IncidenciaForm} como DTO.
+ * </p>
+ */
 @Slf4j
 @Controller
 public class IncidenciaController {
@@ -55,26 +67,24 @@ public class IncidenciaController {
     @PostMapping("/incidencias/{id}/editar")
     public String editar(@PathVariable Integer id, @ModelAttribute IncidenciaForm form, RedirectAttributes redirectAttributes) {
         Incidencia existente = incidenciaService.findById(id);
-        String matricula = (existente != null && existente.getVehiculo() != null)
-                ? existente.getVehiculo().getMatricula() : null;
+        String matricula = (existente != null && existente.getVehiculo() != null)? existente.getVehiculo().getMatricula() : null;
         try {
             incidenciaService.update(id, form.getDescripcionIncidencia(), form.getEstado());
             redirectAttributes.addFlashAttribute("successMessage", "Incidencia actualizada correctamente");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar: " + ex.getMessage());
         }
-        return matricula != null ? "redirect:/incidencias?matricula=" + matricula : "verificaciones";
+        return matricula != null ? "redirect:/incidencias?matricula=" + matricula : "redirect:/verificaciones";
     }
 
     @PostMapping("/incidencias/{id}/eliminar")
     public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         Incidencia incidencia = incidenciaService.findById(id);
-        String matricula = (incidencia != null && incidencia.getVehiculo() != null)
-                ? incidencia.getVehiculo().getMatricula() : null;
+        String matricula = (incidencia != null && incidencia.getVehiculo() != null)? incidencia.getVehiculo().getMatricula() : null;
         if (incidencia != null) {
             incidenciaService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Incidencia eliminada correctamente");
         }
-        return matricula != null ? "redirect:/incidencias?matricula=" + matricula : "redirect:/incidencias";
+        return matricula != null ? "redirect:/incidencias?matricula=" + matricula : "redirect:/verificaciones";
     }
 }

@@ -22,6 +22,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Entidad que representa un informe de observación redactado por un {@link Observador}
+ * sobre una {@link Prueba}.
+ * <p>
+ * Incluye contenido textual libre, fecha de redacción y una puntuación final con
+ * un decimal de precisión ({@code BigDecimal} con precision=2, scale=1).
+ * </p>
+ */
 @Entity
 @Table(name = "informe")
 @Getter
@@ -36,16 +44,14 @@ public class Informe {
 
     @NotNull(message = "El observador es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "licencia_observador", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_informe_observador"))
+    @JoinColumn(name = "licencia_observador", nullable = false, foreignKey = @ForeignKey(name = "fk_informe_observador"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Observador observador;
 
     @NotNull(message = "La prueba es obligatoria")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_prueba", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_informe_prueba"))
+    @JoinColumn(name = "id_prueba", nullable = false, foreignKey = @ForeignKey(name = "fk_informe_prueba"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Prueba prueba;

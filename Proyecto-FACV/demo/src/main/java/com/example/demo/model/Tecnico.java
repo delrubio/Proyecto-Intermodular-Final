@@ -18,6 +18,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Subclase de {@link Usuario} con rol {@code TECNICO}.
+ * <p>
+ * Mapeada a la tabla {@code tecnico} mediante herencia JOINED. Un técnico puede ser
+ * asignado como {@code tecnico1} o {@code tecnico2} en una {@link VerificacionTecnica}.
+ * </p>
+ */
 @Entity
 @Table(name = "tecnico")
 @PrimaryKeyJoinColumn(name = "licencia")

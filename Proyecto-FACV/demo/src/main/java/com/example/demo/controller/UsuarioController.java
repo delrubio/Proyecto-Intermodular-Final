@@ -22,6 +22,20 @@ import com.example.demo.service.UsuarioService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controlador MVC para el panel de administración de usuarios.
+ * <p>
+ * Todas las rutas requieren rol {@code ADMINISTRADOR}.
+ * <ul>
+ *   <li>{@code GET /admin/usuarios} – listado con filtros por búsqueda y rol.</li>
+ *   <li>{@code GET/POST /admin/usuarios/nuevo} – crear usuario de cualquier rol.</li>
+ *   <li>{@code GET/POST /admin/usuarios/{licencia}/editar} – editar usuario existente.</li>
+ *   <li>{@code POST /admin/usuarios/{licencia}/eliminar} – eliminar usuario.</li>
+ * </ul>
+ * Los formularios POST usan {@link com.example.demo.dto.AdminUsuarioForm} para recibir
+ * todos los campos posibles de cualquier subtipo de usuario.
+ * </p>
+ */
 @Slf4j
 @Controller
 public class UsuarioController {
@@ -33,13 +47,8 @@ public class UsuarioController {
         return "redirect:/admin/usuarios";
     }
 
-    // ── Listado ──────────────────────────────────────────────────────────────────
-
     @GetMapping("/admin/usuarios")
-    public String adminListar(
-            @RequestParam(required = false) String busqueda,
-            @RequestParam(required = false) String rol,
-            Model model) {
+    public String adminListar(@RequestParam(required = false) String busqueda, @RequestParam(required = false) String rol, Model model) {
         log.info("UsuarioController - Admin: listado de usuarios");
         var lista = usuarioService.findAll();
 
@@ -51,12 +60,8 @@ public class UsuarioController {
         }
         if (busqueda != null && !busqueda.isBlank()) {
             String b = busqueda.toLowerCase();
-            lista = lista.stream()
-                    .filter(u -> u.getNombre().toLowerCase().contains(b)
-                              || u.getApellidos().toLowerCase().contains(b)
-                              || (u.getEmail() != null && u.getEmail().toLowerCase().contains(b))
-                              || (u.getLicencia() != null && u.getLicencia().toLowerCase().contains(b)))
-                    .toList();
+            lista = lista.stream().filter(u -> u.getNombre().toLowerCase().contains(b) || u.getApellidos().toLowerCase().contains(b) || (u.getEmail() != null && u.getEmail().toLowerCase().contains(b)) 
+            || (u.getLicencia() != null && u.getLicencia().toLowerCase().contains(b))).toList();
         }
 
         model.addAttribute("usuarios", lista);
@@ -65,8 +70,6 @@ public class UsuarioController {
         model.addAttribute("rolFiltro", rol);
         return "admin/usuarios";
     }
-
-    // ── Crear ────────────────────────────────────────────────────────────────────
 
     @GetMapping("/admin/usuarios/nuevo")
     public String adminNuevoForm(Model model) {
@@ -82,10 +85,7 @@ public class UsuarioController {
     public String adminNuevoSubmit(@ModelAttribute AdminUsuarioForm form, RedirectAttributes redirectAttributes) {
         try {
             RolUsuario rolEnum = RolUsuario.valueOf(form.getRol());
-            usuarioService.crear(form.getLicencia(), form.getNombre(), form.getApellidos(), form.getEmail(),
-                    form.getFechaNacimiento(), form.getTelefono(), form.getLocalidad(), rolEnum, form.getRawPassword(),
-                    form.getFederacion(), form.getPresidenteFacv(), form.getExperiencia(),
-                    form.getClub(), form.getCarrerasGanadas(), form.getNivelTecnico(), form.getDescripcion());
+            usuarioService.crear(form.getLicencia(), form.getNombre(), form.getApellidos(), form.getEmail(), form.getFechaNacimiento(), form.getTelefono(), form.getLocalidad(), rolEnum, form.getRawPassword(), form.getFederacion(), form.getPresidenteFacv(), form.getExperiencia(), form.getClub(), form.getCarrerasGanadas(), form.getNivelTecnico(), form.getDescripcion());
             redirectAttributes.addFlashAttribute("successMessage", "Usuario creado correctamente");
             return "redirect:/admin/usuarios";
         } catch (Exception ex) {
@@ -94,8 +94,6 @@ public class UsuarioController {
             return "redirect:/admin/usuarios/nuevo";
         }
     }
-
-    // ── Editar ───────────────────────────────────────────────────────────────────
 
     @GetMapping("/admin/usuarios/{licencia}/editar")
     public String adminEditarForm(@PathVariable String licencia, Model model) {
@@ -106,24 +104,28 @@ public class UsuarioController {
         model.addAttribute("formTitle", "Editar usuario");
         model.addAttribute("formAction", "/admin/usuarios/" + licencia + "/editar");
         model.addAttribute("submitLabel", "Guardar cambios");
-        if (usuario instanceof Observador obs)      model.addAttribute("rolFederacion", obs.getFederacion());
-        if (usuario instanceof Organizador org)     model.addAttribute("rolClub", org.getClub());
-        if (usuario instanceof Piloto p)            { model.addAttribute("rolClub", p.getClub()); model.addAttribute("rolCarrerasGanadas", p.getCarrerasGanadas()); }
-        if (usuario instanceof Tecnico t)           { model.addAttribute("rolNivelTecnico", t.getNivelTecnico()); model.addAttribute("rolDescripcion", t.getDescripcion()); }
-        if (usuario instanceof Administrador a)     { model.addAttribute("rolPresidenteFacv", a.getPresidenteFacv()); model.addAttribute("rolExperiencia", a.getExperiencia()); }
+        if (usuario instanceof Observador obs){
+            model.addAttribute("rolFederacion", obs.getFederacion());
+        }
+        if (usuario instanceof Organizador org){
+            model.addAttribute("rolClub", org.getClub());
+        }
+        if (usuario instanceof Piloto p){ 
+            model.addAttribute("rolClub", p.getClub()); model.addAttribute("rolCarrerasGanadas", p.getCarrerasGanadas()); 
+        }
+        if (usuario instanceof Tecnico t){ 
+            model.addAttribute("rolNivelTecnico", t.getNivelTecnico()); model.addAttribute("rolDescripcion", t.getDescripcion()); 
+        }
+        if (usuario instanceof Administrador a){ 
+            model.addAttribute("rolPresidenteFacv", a.getPresidenteFacv()); model.addAttribute("rolExperiencia", a.getExperiencia()); 
+        }
         return "admin/nuevo-usuario";
     }
 
     @PostMapping("/admin/usuarios/{licencia}/editar")
-    public String adminEditarSubmit(
-            @PathVariable String licencia,
-            @ModelAttribute AdminUsuarioForm form,
-            RedirectAttributes redirectAttributes) {
+    public String adminEditarSubmit(@PathVariable String licencia, @ModelAttribute AdminUsuarioForm form, RedirectAttributes redirectAttributes) {
         try {
-            var result = usuarioService.actualizar(licencia, form.getNombre(), form.getApellidos(), form.getEmail(),
-                    form.getFechaNacimiento(), form.getTelefono(), form.getLocalidad(), form.getRawPassword(),
-                    form.getFederacion(), form.getPresidenteFacv(), form.getExperiencia(),
-                    form.getClub(), form.getCarrerasGanadas(), form.getNivelTecnico(), form.getDescripcion());
+            var result = usuarioService.actualizar(licencia, form.getNombre(), form.getApellidos(), form.getEmail(), form.getFechaNacimiento(), form.getTelefono(), form.getLocalidad(), form.getRawPassword(), form.getFederacion(), form.getPresidenteFacv(), form.getExperiencia(), form.getClub(), form.getCarrerasGanadas(), form.getNivelTecnico(), form.getDescripcion());
             if (result == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Usuario no encontrado");
             } else {
@@ -134,8 +136,6 @@ public class UsuarioController {
         }
         return "redirect:/admin/usuarios";
     }
-
-    // ── Eliminar ─────────────────────────────────────────────────────────────────
 
     @PostMapping("/admin/usuarios/{licencia}/eliminar")
     public String adminEliminar(@PathVariable String licencia, RedirectAttributes redirectAttributes) {

@@ -11,6 +11,15 @@ import com.example.demo.repository.UsuarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implementación de {@link UserDetailsService} para Spring Security.
+ * <p>
+ * Carga un usuario desde la base de datos buscando por {@code nombre} (username).
+ * La entidad {@link com.example.demo.model.Usuario} implementa directamente
+ * {@link org.springframework.security.core.userdetails.UserDetails}, por lo que
+ * no hace falta transformar el objeto devuelto por el repositorio.
+ * </p>
+ */
 @Slf4j
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

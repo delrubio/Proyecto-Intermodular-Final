@@ -1,0 +1,41 @@
+services:
+
+  # ── Base de datos MySQL ────────────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: facvroot
+      MYSQL_DATABASE: facv_db
+      MYSQL_USER: facvuser
+      MYSQL_PASSWORD: facvpass
+    ports:
+      - "3307:3306"      # 3307 en el host para no chocar con MySQL local
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pfacvroot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Aplicación Spring Boot ─────────────────────────────────────────────────
+  app:
+    build:
+      context: ./demo
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    environment:
+      DB_URL: jdbc:mysql://db:3306/facv_db?useSSL=false&serverTimezone=Europe/Madrid&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+      DB_USERNAME: facvuser
+      DB_PASSWORD: facvpass
+      DDL_AUTO: update
+    volumes:
+      - uploads_data:/app/uploadDir
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
+  uploads_data:

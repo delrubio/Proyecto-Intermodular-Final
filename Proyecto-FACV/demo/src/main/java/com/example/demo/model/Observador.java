@@ -18,6 +18,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Subclase de {@link Usuario} con rol {@code OBSERVADOR}.
+ * <p>
+ * Mapeada a la tabla {@code observador} mediante herencia JOINED. Un observador pertenece
+ * a una federación y puede redactar {@link Informe}s sobre las pruebas.
+ * </p>
+ */
 @Entity
 @Table(name = "observador")
 @PrimaryKeyJoinColumn(name = "licencia")

@@ -26,6 +26,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Entidad que representa una incidencia técnica vinculada a una {@link VerificacionTecnica}.
+ * <p>
+ * Se crea automáticamente cuando una verificación da resultado {@code NO_APTO}.
+ * Al marcarse como {@code RESUELTA}, {@link com.example.demo.service.IncidenciaService}
+ * cambia su estado a {@code OCULTA} y actualiza la verificación asociada a {@code APTO}.
+ * </p>
+ */
 @Entity
 @Table(name = "incidencia")
 @Getter
@@ -40,24 +48,21 @@ public class Incidencia {
 
     @NotNull(message = "La verificación es obligatoria")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_verificacion", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_incidencia_verificacion"))
+    @JoinColumn(name = "id_verificacion", nullable = false, foreignKey = @ForeignKey(name = "fk_incidencia_verificacion"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private VerificacionTecnica verificacion;
 
     @NotNull(message = "El vehículo es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "matricula", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_incidencia_vehiculo"))
+    @JoinColumn(name = "matricula", nullable = false, foreignKey = @ForeignKey(name = "fk_incidencia_vehiculo"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Vehiculo vehiculo;
 
     @NotNull(message = "El técnico es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tecnico1_licencia", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_incidencia_tecnico"))
+    @JoinColumn(name = "tecnico1_licencia", nullable = false, foreignKey = @ForeignKey(name = "fk_incidencia_tecnico"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Tecnico tecnico1;

@@ -6,6 +6,14 @@ import java.util.Objects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
+/**
+ * Clave primaria compuesta para {@link AsistenciaPrueba}.
+ * <p>
+ * JPA exige que las claves embebidas implementen {@link java.io.Serializable}.
+ * {@code equals} y {@code hashCode} se definen sobre {@code usuarioLicencia} e
+ * {@code idPrueba} para garantizar identidad correcta.
+ * </p>
+ */
 @Embeddable
 public class AsistenciaPruebaId implements Serializable {
 

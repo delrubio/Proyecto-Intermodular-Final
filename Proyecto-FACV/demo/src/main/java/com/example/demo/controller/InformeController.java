@@ -14,6 +14,19 @@ import com.example.demo.service.InformeService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controlador MVC para la gestión de informes de observación.
+ * <p>
+ * Rutas principales:
+ * <ul>
+ *   <li>{@code GET /informes} – listado de todos los informes.</li>
+ *   <li>{@code GET/POST /nuevo-informe} – creación (ADMINISTRADOR, OBSERVADOR).</li>
+ *   <li>{@code GET/POST /informes/{id}/editar} – edición (ADMINISTRADOR, OBSERVADOR).</li>
+ *   <li>{@code POST /informes/{id}/eliminar} – eliminación (ADMINISTRADOR, OBSERVADOR).</li>
+ * </ul>
+ * Los formularios POST usan {@link com.example.demo.dto.InformeForm} como DTO.
+ * </p>
+ */
 @Slf4j
 @Controller
 public class InformeController {

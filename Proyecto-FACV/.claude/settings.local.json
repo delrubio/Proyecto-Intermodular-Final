@@ -15,7 +15,11 @@
       "Bash(Remove-Item \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto-FACV\\\\demo\\\\src\\\\main\\\\java\\\\com\\\\example\\\\demo\\\\enums\\\\Gravedad.java\" -Force)",
       "Bash(New-Item -ItemType File -Path \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto Intermodular Final\\\\Proyecto-FACV\\\\demo\\\\Dockerfile\" -Force)",
       "Bash(Out-Null)",
-      "PowerShell(New-Item -ItemType File -Path \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto Intermodular Final\\\\Proyecto-FACV\\\\Dockerfile\" -Force)"
+      "PowerShell(New-Item -ItemType File -Path \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto Intermodular Final\\\\Proyecto-FACV\\\\Dockerfile\" -Force)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto Intermodular Final\\\\Proyecto-FACV\\\\demo\\\\src\\\\main\\\\java\\\\com\\\\example\\\\demo\" -Recurse -Filter \"*.java\")",
+      "Bash(Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto Intermodular Final\\\\Proyecto-FACV\\\\demo\" -Recurse | Where-Object {$_.Extension -eq \".java\"} | Select-Object FullName)",
+      "PowerShell(head -50)"
     ]
   }
 }

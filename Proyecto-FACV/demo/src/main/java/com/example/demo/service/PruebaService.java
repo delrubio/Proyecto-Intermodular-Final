@@ -16,6 +16,14 @@ import com.example.demo.repository.UsuarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servicio de negocio para la gestión de pruebas de rally.
+ * <p>
+ * Si el usuario autenticado es {@code ORGANIZADOR}, se asocia automáticamente como
+ * organizador de la prueba al persistirla. Si es {@code ADMINISTRADOR}, el organizador
+ * se pasa explícitamente desde el controlador.
+ * </p>
+ */
 @Slf4j
 @Service
 public class PruebaService {

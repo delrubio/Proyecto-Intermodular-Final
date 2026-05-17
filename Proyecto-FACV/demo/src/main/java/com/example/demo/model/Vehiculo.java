@@ -20,6 +20,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Entidad que representa un vehículo de competición registrado en el sistema.
+ * <p>
+ * La matrícula actúa como clave primaria ({@code @Id} sin generación automática).
+ * Cada vehículo pertenece a exactamente un {@link Piloto}. Las colecciones
+ * {@code inscripciones}, {@code verificaciones} e {@code incidencias} usan
+ * {@code CascadeType.ALL}: eliminar un vehículo elimina todos sus registros dependientes.
+ * </p>
+ */
 @Entity
 @Table(name = "vehiculo")
 @Getter
@@ -43,8 +52,7 @@ public class Vehiculo {
     private String categoria;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "piloto_licencia", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_vehiculo_piloto"))
+    @JoinColumn(name = "piloto_licencia", nullable = false, foreignKey = @ForeignKey(name = "fk_vehiculo_piloto"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Piloto piloto;

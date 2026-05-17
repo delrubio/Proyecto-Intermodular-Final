@@ -21,6 +21,20 @@ import com.example.demo.service.VehiculoService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controlador MVC para la gestión de vehículos de competición.
+ * <p>
+ * Rutas principales:
+ * <ul>
+ *   <li>{@code GET /vehiculos} – listado de todos los vehículos.</li>
+ *   <li>{@code GET/POST /nuevo-vehiculo} – formulario de creación (ADMINISTRADOR, PILOTO).</li>
+ *   <li>{@code GET/POST /vehiculos/{matricula}/editar} – formulario de edición (ADMINISTRADOR, PILOTO).</li>
+ *   <li>{@code POST /vehiculos/{matricula}/eliminar} – eliminación (ADMINISTRADOR, PILOTO).</li>
+ * </ul>
+ * La validación Bean Validation ({@code @Valid}) se aplica sobre la entidad {@link com.example.demo.model.Vehiculo}
+ * vinculada con {@code @ModelAttribute}.
+ * </p>
+ */
 @Slf4j
 @Controller
 public class VehiculoController {
@@ -45,12 +59,7 @@ public class VehiculoController {
     }
 
     @PostMapping("/nuevo-vehiculo")
-    public String nuevoVehiculoSubmit(
-            @Valid @ModelAttribute("vehiculo") Vehiculo vehiculo,
-            BindingResult bindingResult,
-            @RequestParam(required = false) String pilotoLicencia,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+    public String nuevoVehiculoSubmit(@Valid @ModelAttribute("vehiculo") Vehiculo vehiculo, BindingResult bindingResult, @RequestParam(required = false) String pilotoLicencia, RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
             modelNewForm(model);
             addPilotosToModel(model);
@@ -80,12 +89,7 @@ public class VehiculoController {
     }
 
     @PostMapping("/vehiculos/{matricula}/editar")
-    public String editarVehiculoSubmit(
-            @PathVariable String matricula,
-            @Valid @ModelAttribute("vehiculo") Vehiculo vehiculo,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+    public String editarVehiculoSubmit(@PathVariable String matricula, @Valid @ModelAttribute("vehiculo") Vehiculo vehiculo, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         if (vehiculoService.findById(matricula) == null) return "redirect:/vehiculos";
         if (bindingResult.hasErrors()) {
             modelEditForm(model, matricula);

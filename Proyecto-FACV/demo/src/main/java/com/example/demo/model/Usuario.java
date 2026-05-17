@@ -28,6 +28,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidad base de la jerarquía de usuarios, mapeada a la tabla {@code usuario}.
+ * <p>
+ * Utiliza herencia {@code JOINED}: cada subclase tiene su propia tabla que comparte
+ * la clave primaria {@code licencia} con esta tabla padre. La columna {@code rol}
+ * actúa como discriminador JPA y determina la subclase concreta a instanciar.
+ * </p>
+ * <p>
+ * Implementa {@link UserDetails} para integración directa con Spring Security;
+ * el {@code username} es el campo {@code nombre} y la autoridad se construye
+ * como {@code ROLE_<ROL>}.
+ * </p>
+ *
+ * @see Administrador
+ * @see Piloto
+ * @see Tecnico
+ * @see Observador
+ * @see Organizador
+ */
 @Entity
 @Table(name = "usuario")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -69,12 +88,9 @@ public abstract class Usuario implements UserDetails {
     @Column(name = "password", length = 255, nullable = false)
     private String password;
 
-    // insertable/updatable = false porque lo gestiona el discriminador de herencia
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", length = 20, nullable = false, insertable = false, updatable = false)
     private RolUsuario rol;
-
-    // ── UserDetails ──────────────────────────────────────────────────────────────
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
