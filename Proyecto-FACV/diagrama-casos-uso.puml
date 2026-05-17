@@ -1,0 +1,212 @@
+@startuml FACV - Casos de Uso
+
+left to right direction
+
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam packageBackgroundColor #EEF2FF
+skinparam packageBorderColor    #6677CC
+skinparam packageFontStyle      bold
+skinparam packageFontSize       13
+
+skinparam usecaseBackgroundColor #FFFFFF
+skinparam usecaseBorderColor    #666666
+skinparam usecaseFontSize       12
+
+skinparam arrowColor            #444444
+skinparam arrowFontSize         10
+skinparam arrowFontColor        #555555
+
+skinparam actorFontSize         13
+skinparam actorFontStyle        bold
+skinparam actorBorderColor      #444444
+
+' ═══════════════════════════════════════
+'  ACTORES
+' ═══════════════════════════════════════
+
+actor "Piloto"        as PIL  #LightSkyBlue
+actor "Técnico"       as TEC  #90EE90
+actor "Organizador"   as ORG  #FFD700
+actor "Observador"    as OBS  #DDA0DD
+actor "Administrador" as ADM  #F08080
+actor "Sistema"       as SIS  #C0C0C0
+
+' ═══════════════════════════════════════
+'  SISTEMA
+' ═══════════════════════════════════════
+
+rectangle "  Sistema FACV  " as SFACV {
+
+    ' ── 1. Autenticación ─────────────────
+    package "1. Autenticación" as P_AUTH {
+        usecase "Iniciar sesión"  as UC_IN
+        usecase "Cerrar sesión"   as UC_OUT
+    }
+
+    ' ── 2. Vehículos ─────────────────────
+    package "2. Vehículos" as P_VEH {
+        usecase "Registrar vehículo" as UC_VEH_C
+        usecase "Editar vehículo"    as UC_VEH_E
+        usecase "Eliminar vehículo"  as UC_VEH_D
+    }
+
+    ' ── 3. Pruebas ───────────────────────
+    package "3. Pruebas" as P_PRU {
+        usecase "Crear prueba"    as UC_PRU_C
+        usecase "Editar prueba"   as UC_PRU_E
+        usecase "Eliminar prueba" as UC_PRU_D
+    }
+
+    ' ── 4. Inscripciones ─────────────────
+    package "4. Inscripciones" as P_INS {
+        usecase "Inscribir vehículo\nen prueba" as UC_INS_C
+        usecase "Cancelar inscripción"          as UC_INS_D
+    }
+
+    ' ── 5. Verificación Técnica ──────────
+    package "5. Verificación Técnica" as P_VER {
+        usecase "Seleccionar prueba"          as UC_VER_SEL
+        usecase "Ver vehículos pendientes"    as UC_VER_PEND
+        usecase "Registrar verificación"      as UC_VER_C
+        usecase "Editar verificación"         as UC_VER_E
+    }
+
+    ' ── 6. Incidencias ───────────────────
+    package "6. Incidencias" as P_INC {
+        usecase "Ver incidencias"     as UC_INC_R
+        usecase "Editar incidencia"   as UC_INC_E
+        usecase "Resolver incidencia" as UC_INC_RES
+        usecase "Eliminar incidencia" as UC_INC_D
+    }
+
+    ' ── 7. Informes ──────────────────────
+    package "7. Informes" as P_INF {
+        usecase "Redactar informe" as UC_INF_C
+        usecase "Editar informe"   as UC_INF_E
+        usecase "Eliminar informe" as UC_INF_D
+    }
+
+    ' ── 8. Acciones Automáticas ──────────
+    package "8. Acciones Automáticas\n     del Sistema" as P_AUTO {
+        usecase "Generar incidencia\nautomáticamente"  as UC_A_INC
+        usecase "Actualizar estado\nde inscripción"    as UC_A_INS
+        usecase "Marcar verificación\ncomo APTO"       as UC_A_APT
+        usecase "Ocultar incidencia\nresuelta"         as UC_A_OCU
+    }
+
+    ' ── 9. Administrador (acceso total) ──
+    package "9. Gestión de Usuarios\n   (solo Administrador)" as P_USR {
+        usecase "Crear usuario"    as UC_USR_C
+        usecase "Editar usuario"   as UC_USR_E
+        usecase "Eliminar usuario" as UC_USR_D
+    }
+}
+
+' ═══════════════════════════════════════
+'  RELACIONES — AUTENTICACIÓN
+' ═══════════════════════════════════════
+
+PIL --> UC_IN
+TEC --> UC_IN
+ORG --> UC_IN
+OBS --> UC_IN
+ADM --> UC_IN
+
+PIL --> UC_OUT
+TEC --> UC_OUT
+ORG --> UC_OUT
+OBS --> UC_OUT
+ADM --> UC_OUT
+
+' ═══════════════════════════════════════
+'  RELACIONES — VEHÍCULOS
+' ═══════════════════════════════════════
+
+PIL --> UC_VEH_C
+PIL --> UC_VEH_E
+PIL --> UC_VEH_D
+ADM --> UC_VEH_C
+ADM --> UC_VEH_E
+ADM --> UC_VEH_D
+
+' ═══════════════════════════════════════
+'  RELACIONES — PRUEBAS
+' ═══════════════════════════════════════
+
+ORG --> UC_PRU_C
+ORG --> UC_PRU_E
+ORG --> UC_PRU_D
+ADM --> UC_PRU_C
+ADM --> UC_PRU_E
+ADM --> UC_PRU_D
+
+' ═══════════════════════════════════════
+'  RELACIONES — INSCRIPCIONES
+' ═══════════════════════════════════════
+
+PIL --> UC_INS_C
+PIL --> UC_INS_D
+ADM --> UC_INS_C
+ADM --> UC_INS_D
+
+' ═══════════════════════════════════════
+'  RELACIONES — VERIFICACIÓN
+' ═══════════════════════════════════════
+
+TEC --> UC_VER_SEL
+TEC --> UC_VER_PEND
+TEC --> UC_VER_C
+TEC --> UC_VER_E
+ADM --> UC_VER_SEL
+ADM --> UC_VER_C
+ADM --> UC_VER_E
+
+UC_VER_C ..> UC_A_INC : <<include>>
+UC_VER_C ..> UC_A_INS : <<include>>
+
+' ═══════════════════════════════════════
+'  RELACIONES — INCIDENCIAS
+' ═══════════════════════════════════════
+
+TEC --> UC_INC_R
+TEC --> UC_INC_E
+TEC --> UC_INC_RES
+TEC --> UC_INC_D
+ADM --> UC_INC_R
+ADM --> UC_INC_E
+ADM --> UC_INC_RES
+ADM --> UC_INC_D
+
+UC_INC_RES ..> UC_A_APT : <<include>>
+UC_INC_RES ..> UC_A_OCU : <<include>>
+
+' ═══════════════════════════════════════
+'  RELACIONES — INFORMES
+' ═══════════════════════════════════════
+
+OBS --> UC_INF_C
+OBS --> UC_INF_E
+OBS --> UC_INF_D
+ADM --> UC_INF_C
+ADM --> UC_INF_E
+ADM --> UC_INF_D
+
+' ═══════════════════════════════════════
+'  RELACIONES — SISTEMA AUTOMÁTICO
+' ═══════════════════════════════════════
+
+SIS --> UC_A_INC
+SIS --> UC_A_INS
+SIS --> UC_A_APT
+SIS --> UC_A_OCU
+
+' ═══════════════════════════════════════
+'  RELACIONES — USUARIOS (solo ADMIN)
+' ═══════════════════════════════════════
+
+ADM --> UC_USR_C
+ADM --> UC_USR_E
+ADM --> UC_USR_D
+
+@enduml

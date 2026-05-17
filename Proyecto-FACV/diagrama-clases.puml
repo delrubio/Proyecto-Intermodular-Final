@@ -1,0 +1,184 @@
+@startuml FACV - Diagrama de Clases
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 13
+skinparam classBackgroundColor #FAFAFA
+skinparam classBorderColor #555555
+skinparam arrowColor #333333
+skinparam packageBackgroundColor #F0F4FF
+skinparam packageBorderColor #7799CC
+skinparam linetype ortho
+
+' ─────────────────────────────────────────
+' ENUMS
+' ─────────────────────────────────────────
+
+package "enums" {
+    enum RolUsuario {
+        ADMINISTRADOR
+        PILOTO
+        TECNICO
+        OBSERVADOR
+        ORGANIZADOR
+    }
+
+    enum Estado {
+        ABIERTA
+        EN_REVISION
+        RESUELTA
+        OCULTA
+    }
+
+    enum ResultadoVerificacion {
+        APTO
+        NO_APTO
+    }
+}
+
+' ─────────────────────────────────────────
+' JERARQUÍA DE USUARIO (herencia JOINED)
+' ─────────────────────────────────────────
+
+package "model" {
+
+    abstract class Usuario {
+        # licencia : String <<PK>>
+        # nombre : String
+        # apellidos : String
+        # email : String
+        # fechaNacimiento : LocalDate
+        # telefono : String
+        # localidad : String
+        # password : String
+        # rol : RolUsuario
+        --
+        + getAuthorities() : Collection
+        + getUsername() : String
+    }
+
+    class Administrador {
+        - presidenteFacv : Boolean
+        - experiencia : Byte
+    }
+
+    class Piloto {
+        - club : String
+        - carrerasGanadas : Integer
+    }
+
+    class Tecnico {
+        - nivelTecnico : Byte
+        - descripcion : String
+    }
+
+    class Observador {
+        - federacion : String
+    }
+
+    class Organizador {
+        - club : String
+    }
+
+    Usuario <|-- Administrador
+    Usuario <|-- Piloto
+    Usuario <|-- Tecnico
+    Usuario <|-- Observador
+    Usuario <|-- Organizador
+
+    ' ─────────────────────────────────────
+    ' ENTIDADES PRINCIPALES
+    ' ─────────────────────────────────────
+
+    class Vehiculo {
+        - matricula : String <<PK>>
+        - marca : String
+        - modelo : String
+        - categoria : String
+    }
+
+    class Prueba {
+        - idPrueba : Integer <<PK>>
+        - nombre : String
+        - fecha : LocalDate
+        - localidad : String
+        - campeonato : String
+        - imagenFilename : String
+        - nInscritos : Integer
+    }
+
+    class VerificacionTecnica {
+        - id : Integer <<PK>>
+        - fecha : LocalDate
+        - resultado : ResultadoVerificacion
+    }
+
+    class Incidencia {
+        - id : Integer <<PK>>
+        - descripcionIncidencia : String
+        - estado : Estado
+        - fecha : LocalDate
+    }
+
+    class Informe {
+        - id : Integer <<PK>>
+        - contenido : String
+        - fecha : LocalDate
+        - puntuacionFinal : BigDecimal
+    }
+
+    class InscripcionPrueba {
+        - id : InscripcionPruebaId <<EmbeddedId>>
+        - verificado : boolean
+        - apto : Boolean
+    }
+
+    class InscripcionPruebaId <<Embeddable>> {
+        - matricula : String
+        - idPrueba : Integer
+    }
+
+    class AsistenciaPrueba {
+        - id : AsistenciaPruebaId <<EmbeddedId>>
+    }
+
+    class AsistenciaPruebaId <<Embeddable>> {
+        - usuarioLicencia : String
+        - idPrueba : Integer
+    }
+
+    ' ─────────────────────────────────────
+    ' RELACIONES ENTRE ENTIDADES
+    ' ─────────────────────────────────────
+
+    Piloto      "1" o-- "0..*" Vehiculo         : posee >
+    Organizador "1" o-- "0..*" Prueba           : organiza >
+
+    Vehiculo    "1" o-- "0..*" InscripcionPrueba : <<CascadeAll>>
+    Prueba      "1" o-- "0..*" InscripcionPrueba : <<CascadeAll>>
+    InscripcionPrueba *-- InscripcionPruebaId
+
+    Vehiculo    "1" o-- "0..*" VerificacionTecnica : <<CascadeAll>>
+    Prueba      "1" o-- "0..*" VerificacionTecnica  : <<CascadeAll>>
+    Tecnico     "1" o-- "0..*" VerificacionTecnica  : tecnico1 >
+    Tecnico     "1" o-- "0..*" VerificacionTecnica  : tecnico2 >
+
+    VerificacionTecnica "1" o-- "0..*" Incidencia : <<CascadeAll>>
+    Vehiculo            "1" o-- "0..*" Incidencia  : <<CascadeAll>>
+    Tecnico             "1" o-- "0..*" Incidencia  : notifica >
+
+    Observador "1" o-- "0..*" Informe : redacta >
+    Prueba     "1" o-- "0..*" Informe : <<CascadeAll>>
+
+    Usuario    "1" o-- "0..*" AsistenciaPrueba : <<CascadeAll>>
+    Prueba     "1" o-- "0..*" AsistenciaPrueba : <<CascadeAll>>
+    AsistenciaPrueba *-- AsistenciaPruebaId
+
+    ' ─────────────────────────────────────
+    ' RELACIONES CON ENUMS
+    ' ─────────────────────────────────────
+    Usuario             ..> RolUsuario
+    Incidencia          ..> Estado
+    VerificacionTecnica ..> ResultadoVerificacion
+}
+
+@enduml

@@ -64,7 +64,7 @@ public class DataInitializer {
             admin.setNombre("Ignacio");
             admin.setApellidos("Aviño");
             admin.setEmail("admin@facv.es");
-            admin.setPassword(passwordEncoder.encode("1234"));
+            admin.setPassword(passwordEncoder.encode("12345"));
             admin.setTelefono("600000001");
             admin.setLocalidad("Valencia");
             admin.setFechaNacimiento(LocalDate.of(1980, 1, 15));
