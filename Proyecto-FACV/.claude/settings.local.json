@@ -20,7 +20,8 @@
       "Bash(Select-Object FullName)",
       "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\dandr\\\\OneDrive\\\\Escritorio\\\\Proyecto Intermodular Final\\\\Proyecto-FACV\\\\demo\" -Recurse | Where-Object {$_.Extension -eq \".java\"} | Select-Object FullName)",
       "PowerShell(head -50)",
-      "Bash(.\\\\mvnw javadoc:javadoc)"
+      "Bash(.\\\\mvnw javadoc:javadoc)",
+      "WebFetch(domain:fedacv.com)"
     ]
   }
 }

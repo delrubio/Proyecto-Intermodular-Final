@@ -17,7 +17,7 @@
                 <p>Lista de pruebas disponibles en el sistema.</p>
             </div>
             <div class="hero-actions" th:if="${userRol == 'ADMINISTRADOR' or userRol == 'ORGANIZADOR'}">
-                <a class="facv-btn-primary" th:href="@{/nueva-prueba}">+ Añadir prueba</a>
+                <a class="facv-btn-secondary" th:href="@{/nueva-prueba}">+ Añadir prueba</a>
             </div>
         </section>
 
@@ -29,7 +29,7 @@
                            th:value="${searchForm?.nombre}" placeholder="Nombre de la prueba...">
                 </div>
                 <div class="facv-search-actions">
-                    <button type="submit" class="facv-btn-primary">Buscar</button>
+                    <button type="submit" class="facv-btn-secondary">Buscar</button>
                     <a class="facv-btn-neutral" th:href="@{/pruebas}">Limpiar</a>
                 </div>
             </div>

@@ -18,36 +18,78 @@
             </div>
         </section>
 
-        <div class="home-grid">
-            <article class="card panel card-accent">
-                <h2><a th:href="@{/pruebas}">Pruebas</a></h2>
-                <p>Gestiona las pruebas, sus fechas y la información principal.</p>
-            </article>
-            <article class="card panel">
-                <h2><a th:href="@{/vehiculos}">Vehículos</a></h2>
-                <p>Consulta y organiza los vehículos vinculados al proyecto.</p>
-            </article>
-            <article class="card panel">
-                <h2><a th:href="@{/verificaciones}">Verificaciones</a></h2>
-                <p>Controla la parte técnica y su estado de revisión.</p>
-            </article>
-            <article class="card panel">
-                <h2><a th:href="@{/inscripciones}">Inscripciones</a></h2>
-                <p>Registro de vehículos participantes en cada prueba.</p>
-            </article>
-            <article class="card panel">
-                <h2><a th:href="@{/incidencias}">Incidencias</a></h2>
-                <p>Seguimiento de incidencias técnicas detectadas en pruebas.</p>
-            </article>
-            <article class="card panel">
-                <h2><a th:href="@{/informes}">Informes</a></h2>
-                <p>Documentación técnica generada tras cada prueba.</p>
-            </article>
-            <article class="card panel">
-                <h2><a th:href="@{/usuarios}">Usuarios</a></h2>
-                <p>Acceso y administración de usuarios del sistema.</p>
-            </article>
-        </div>
+        <!-- ── Últimas noticias FACV ───────────────────────────────────── -->
+        <section class="page-section">
+            <h2 class="facv-section-title">Últimas noticias</h2>
+            <div class="news-grid">
+
+                <article class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img class="news-card-img"
+                             src="https://fedacv.com/wp-content/uploads/2026/05/dep.jpg.jpeg"
+                             alt="Samuel Ortiz, Descansa en Paz">
+                    </div>
+                    <div class="news-card-body">
+                        <span class="news-card-date">30 mayo 2026</span>
+                        <h3 class="news-card-title">Samuel Ortiz, Descansa en Paz</h3>
+                        <p class="news-card-desc">La Federación de Automovilismo de la Comunitat Valenciana quiere mostrar sus más sinceras condolencias a los familiares y amigos del joven copiloto.</p>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img class="news-card-img"
+                             src="https://fedacv.com/wp-content/uploads/2026/05/55257927208_246e885fe1_k.jpg"
+                             alt="Cerámica, Este Año También Histórico y Nacional">
+                    </div>
+                    <div class="news-card-body">
+                        <span class="news-card-date">28 mayo 2026</span>
+                        <h3 class="news-card-title">Cerámica, Este Año También Histórico y Nacional</h3>
+                        <p class="news-card-desc">La provincia de Castellón será nuevamente sede de una prueba importante de automovilismo con la disputa de la trigésimo edición del evento.</p>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img class="news-card-img"
+                             src="https://fedacv.com/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-11-at-14.38.20-1.jpeg"
+                             alt="Archiles y Arenas Se Imponen en Relleu">
+                    </div>
+                    <div class="news-card-body">
+                        <span class="news-card-date">11 mayo 2026</span>
+                        <h3 class="news-card-title">Archiles y Arenas Se Imponen en Relleu</h3>
+                        <p class="news-card-desc">Ganadores en la cuarta edición de la Pujada a Relleu, organizada por el Club d'Automobilisme de Relleu en la localidad alicantina.</p>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img class="news-card-img"
+                             src="https://fedacv.com/wp-content/uploads/2026/05/Archiles-Relleu-pre.jpg"
+                             alt="Relleu, Segunda Cita del Territorial de Montaña">
+                    </div>
+                    <div class="news-card-body">
+                        <span class="news-card-date">7 mayo 2026</span>
+                        <h3 class="news-card-title">Relleu, Segunda Cita del Territorial de Montaña</h3>
+                        <p class="news-card-desc">La localidad alicantina será uno de los grandes focos del automovilismo con la celebración de la segunda prueba del campeonato territorial.</p>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img class="news-card-img"
+                             src="https://fedacv.com/wp-content/uploads/2025/11/54416374163_4e85012f46_k.jpg"
+                             alt="Novedades en Calendario Rallyes">
+                    </div>
+                    <div class="news-card-body">
+                        <span class="news-card-date">4 mayo 2026</span>
+                        <h3 class="news-card-title">Novedades en Calendario Rallyes</h3>
+                        <p class="news-card-desc">Valencia y Gandía permutan sus fechas debido a circunstancias que obligaron a reorganizar el calendario de la temporada de rallyes.</p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
     </main>
 
     <script th:src="@{/js/facv-toasts.js}"></script>

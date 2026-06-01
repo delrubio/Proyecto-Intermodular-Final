@@ -30,7 +30,7 @@
                 Las inscripciones se gestionan desde la sección <strong>Inscripciones</strong>.
             </p>
             <div class="facv-form-actions">
-                <a class="facv-btn-secondary" th:href="@{/inscripciones}">Ver inscripciones</a>
+                <a class="facv-btn-secondary" th:href="@{/inscripciones}" style="color: #ffff;">Ver inscripciones</a>
                 <a class="facv-btn-neutral" th:href="@{/verificaciones}">Ver verificaciones</a>
             </div>
         </div>
@@ -54,7 +54,7 @@
                         <td data-label="Piloto"
                             th:text="${v.piloto != null ? v.piloto.nombre + ' ' + v.piloto.apellidos : '—'}">Piloto</td>
                         <td data-label="Acción">
-                            <a class="facv-btn-primary"
+                            <a class="facv-btn-secondary"
                                th:href="@{/nueva-verificacion(vehiculoMatricula=${v.matricula},pruebaId=${pruebaId},fromPruebaId=${pruebaId})}">
                                 Verificar
                             </a>
